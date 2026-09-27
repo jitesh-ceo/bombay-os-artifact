@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { NewsStream } from './NewsStream';
 import { ArrowUpRight, CalendarClock, Check, FileText, ListChecks, Mail, Presentation, Sparkles, UserCheck } from 'lucide-react';
 import { client } from '../../data/client';
 import { deliverables, type DeliverableKind } from '../../data/deliverables';
@@ -132,6 +133,8 @@ export function OutputTray() {
           );
         })}
       </div>
+
+      <NewsStream />
 
       <div className="impact">
         <div className="impact__head">
