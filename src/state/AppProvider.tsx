@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useReducer, type Dispatch, type ReactNode } from 'react';
+import { prospect } from '../data/prospect';
 import { signals } from '../data/signals';
 import { workflows } from '../data/workflows';
 import { useSoundCues } from '../sound/useSoundCues';
@@ -133,6 +134,8 @@ function usePresenterKeys(state: AppState, dispatch: Dispatch<Action>) {
       const target = e.target as HTMLElement | null;
       const typing = target && (target.tagName === 'INPUT' || target.isContentEditable);
       if (e.key === 'Escape') {
+        // With nothing of ours open, the Control Room handles Escape itself.
+        if (state.ui.room && !state.ui.overlay && !state.ui.viewer && !state.ui.drawer) return;
         if (state.ui.overlay) dispatch({ type: 'OVERLAY', overlay: null });
         else if (state.ui.viewer) dispatch({ type: 'CLOSE_VIEWER' });
         else if (state.ui.drawer) dispatch({ type: 'DRAWER', open: false });
@@ -144,9 +147,16 @@ function usePresenterKeys(state: AppState, dispatch: Dispatch<Action>) {
       if (state.ui.overlay === 'palette' || state.ui.overlay === 'setup') return;
       const k = e.key.toLowerCase();
       const now = Date.now();
+      if (k === 'c' && state.bootDone && prospect.preset === 'agency') {
+        dispatch({ type: 'ROOM', open: !state.ui.room });
+        return;
+      }
+      // From the Control Room, keys that drive the workflow bring Execution forward first.
+      const toExecution = () => state.ui.room && dispatch({ type: 'ROOM', open: false });
       if (e.key === ' ' || e.key === 'ArrowRight') {
         e.preventDefault();
-        presenterAdvance(state, dispatch);
+        if (state.ui.room && state.run.status !== 'idle') toExecution();
+        else presenterAdvance(state, dispatch);
       } else if (k === 'r') {
         dispatch({ type: 'RESET', now });
       } else if (k === 'i') {
@@ -154,6 +164,7 @@ function usePresenterKeys(state: AppState, dispatch: Dispatch<Action>) {
       } else if (k === 'h') {
         dispatch({ type: 'TOGGLE_HUD' });
       } else if (k === 'm') {
+        toExecution();
         dispatch({ type: 'SET_VIEW', view: state.ui.view === 'map' ? 'stage' : 'map' });
       } else if (k === 'a') {
         const i = AUTONOMY.findIndex((a) => a.id === state.autonomy);
@@ -171,6 +182,7 @@ function usePresenterKeys(state: AppState, dispatch: Dispatch<Action>) {
         const sig = signals[Number(k) - 1];
         if (sig) {
           if (!state.bootDone) dispatch({ type: 'BOOT_DONE' });
+          toExecution();
           dispatch({ type: 'SELECT_SIGNAL', id: sig.id });
         }
       }

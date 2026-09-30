@@ -1,6 +1,7 @@
 import { ambientLedger, client, impactBaseline } from '../data/client';
 import { deliverables } from '../data/deliverables';
 import { integrationById, integrations, restrictedResources, type IntegrationId } from '../data/integrations';
+import { prospect } from '../data/prospect';
 import { signals } from '../data/signals';
 import { workflows, workflowForSignal } from '../data/workflows';
 import { AUTONOMY, autonomyLabel, effAutonomy, effHold, effInterrupt } from './autonomy';
@@ -80,7 +81,7 @@ export function createInitialState(now: number): AppState {
     autonomy: 'approve',
     sound: savedSound(),
     timelapse: { active: false, index: 0, done: false },
-    ui: { drawer: false, drawerFocus: null, viewer: null, view: 'map', overlay: null },
+    ui: { drawer: false, drawerFocus: null, viewer: null, view: 'map', overlay: null, room: prospect.preset === 'agency' },
     presenter: { hud: false, speed: 1, hold: false, interrupt: true },
   };
 }
@@ -233,13 +234,13 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'START': {
       if (state.run.status !== 'idle' && state.run.status !== 'complete') return state;
       const run = { ...createRun(state.run.signalId), status: 'running' as const, startedAt: action.now };
-      return { ...state, run, ui: { ...state.ui, viewer: null, drawer: false, view: 'stage', overlay: null } };
+      return { ...state, run, ui: { ...state.ui, viewer: null, drawer: false, view: 'stage', overlay: null, room: false } };
     }
 
     case 'RUN_SIGNAL': {
       const selected = reducer(state, { type: 'SELECT_SIGNAL', id: action.id });
       if (selected.run.status !== 'idle' && selected.run.status !== 'complete') {
-        return { ...selected, ui: { ...selected.ui, view: 'stage', overlay: null } };
+        return { ...selected, ui: { ...selected.ui, view: 'stage', overlay: null, room: false } };
       }
       return reducer(selected, { type: 'START', now: action.now });
     }
@@ -351,6 +352,9 @@ export function reducer(state: AppState, action: Action): AppState {
 
     case 'OVERLAY':
       return { ...state, ui: { ...state.ui, overlay: action.overlay, drawer: false, viewer: action.overlay ? null : state.ui.viewer } };
+
+    case 'ROOM':
+      return { ...state, ui: { ...state.ui, room: action.open, overlay: null, drawer: false, viewer: null } };
 
     case 'TOGGLE_SOUND':
       return { ...state, sound: !state.sound };

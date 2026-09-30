@@ -1,10 +1,11 @@
-import { Command, Plus, Sunrise, UserRound, Volume2, VolumeX } from 'lucide-react';
+import { Command, LayoutDashboard, Plus, Sunrise, UserRound, Volume2, VolumeX, Workflow } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { IntegrationMark } from '../../components/IntegrationMark';
 import { BrandMark } from '../../components/primitives';
 import { client, os } from '../../data/client';
 import type { IntegrationId } from '../../data/integrations';
-import { morning } from '../../data/signals';
+import { prospect } from '../../data/prospect';
+import { morning, signals } from '../../data/signals';
 import { useAppState, useDispatch } from '../../state/AppProvider';
 import type { AppState } from '../../state/types';
 import { fmtClock, systemState } from '../../state/selectors';
@@ -33,6 +34,7 @@ export function TopBar() {
   const sys = systemState(state);
   const connected = (Object.entries(state.integrations) as [IntegrationId, string][]).filter(([, s]) => s === 'connected');
   const lapse = state.timelapse.active;
+  const openSignals = signals.filter((s) => !state.handled[s.id]).length;
 
   return (
     <header className="topbar">
@@ -59,11 +61,20 @@ export function TopBar() {
             <span className="mono">Live</span>
           </span>
         )}
-        <span className="topbar__state-label mono">{sys.label}</span>
         <span className={`topbar__clock mono ${lapse ? 't-acc' : 't-3'}`}>{lapse ? simClock(state, now) : fmtClock(now)}</span>
       </div>
 
       <div className="topbar__right">
+        {prospect.preset === 'agency' && (
+          <button
+            className="chip-btn"
+            onClick={() => dispatch({ type: 'ROOM', open: !state.ui.room })}
+            title={state.ui.room ? `Open Execution · ${openSignals} signals waiting (C)` : 'Back to the Control Room (C)'}
+          >
+            {state.ui.room ? <Workflow size={12} /> : <LayoutDashboard size={12} />}
+            <span className="mono">{state.ui.room ? 'Execution' : 'Room'}</span>
+          </button>
+        )}
         <button className="chip-btn" onClick={() => dispatch({ type: 'OVERLAY', overlay: 'palette' })} title="Commands (⌘K)">
           <Command size={12} />
           <span className="mono">K</span>
@@ -71,14 +82,6 @@ export function TopBar() {
         <button className="chip-btn" onClick={() => dispatch({ type: 'OVERLAY', overlay: 'setup' })} title="Prospect setup (P)">
           <UserRound size={12} />
           <span className="mono">Setup</span>
-        </button>
-        <button
-          className={`chip-btn ${lapse ? 'is-on' : ''}`}
-          onClick={() => dispatch({ type: 'TIMELAPSE_START', now: Date.now() })}
-          title="Morning time-lapse (T)"
-        >
-          <Sunrise size={12} />
-          <span className="mono">AM</span>
         </button>
         <button className={`chip-btn ${state.sound ? 'is-on' : ''}`} onClick={() => dispatch({ type: 'TOGGLE_SOUND' })} title="Sound (S)" aria-pressed={state.sound}>
           {state.sound ? <Volume2 size={12} /> : <VolumeX size={12} />}

@@ -4,6 +4,9 @@ import '@fontsource-variable/inter-tight';
 import '@fontsource-variable/jetbrains-mono';
 import '@fontsource/instrument-serif/400.css';
 import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource/tajawal/400.css';
+import '@fontsource/tajawal/500.css';
+import '@fontsource/tajawal/700.css';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/shell.css';
@@ -11,6 +14,7 @@ import './styles/stage.css';
 import './styles/overlays.css';
 import './styles/map.css';
 import './styles/extras.css';
+import './styles/room.css';
 import App from './App';
 
 createRoot(document.getElementById('root')!).render(

@@ -86,6 +86,7 @@ export interface AppState {
     viewer: string | null;
     view: 'map' | 'stage';
     overlay: Overlay;
+    room: boolean;
   };
   presenter: { hud: boolean; speed: number; hold: boolean; interrupt: boolean };
 }
@@ -107,6 +108,7 @@ export type Action =
   | { type: 'SET_AUTONOMY'; level: Autonomy; now: number }
   | { type: 'SET_VIEW'; view: 'map' | 'stage' }
   | { type: 'OVERLAY'; overlay: Overlay }
+  | { type: 'ROOM'; open: boolean }
   | { type: 'TOGGLE_SOUND' }
   | { type: 'TIMELAPSE_START'; now: number }
   | { type: 'TIMELAPSE_NEXT'; now: number }
