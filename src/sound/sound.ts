@@ -1,7 +1,8 @@
 // Tiny WebAudio synth; no audio files. Every cue is short and quiet by design.
 let ctx: AudioContext | null = null;
 
-function audio() {
+// One AudioContext for every cue and for JARVIS’s voice. Resumes on demand (browsers start it suspended).
+export function audioContext() {
   if (!ctx) {
     const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (!Ctor) return null;
@@ -12,7 +13,7 @@ function audio() {
 }
 
 function tone(freq: number, start: number, dur: number, gain: number, type: OscillatorType = 'sine', glideTo?: number) {
-  const a = audio();
+  const a = audioContext();
   if (!a) return;
   const t0 = a.currentTime + start;
   const osc = a.createOscillator();
