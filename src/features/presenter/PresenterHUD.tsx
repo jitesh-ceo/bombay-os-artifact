@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Kbd } from '../../components/primitives';
 import { hasRoom } from '../../data/prospect';
+import { useJarvis } from '../../jarvis/JarvisProvider';
 import { getEvents } from '../../state/compile';
 import { useAppState, useDispatch } from '../../state/AppProvider';
 import { t } from '../../motion/transitions';
@@ -9,6 +10,7 @@ export function PresenterHUD() {
   const state = useAppState();
   const dispatch = useDispatch();
   const { presenter, run } = state;
+  const { health } = useJarvis();
   const total = getEvents(run.workflowId).length;
 
   return (
@@ -19,6 +21,15 @@ export function PresenterHUD() {
             <span className="mono t-acc">Presenter</span>
             <span className="mono-sm t-4">
               {run.status} · {run.stage ?? '—'} · {run.cursor}/{total}
+            </span>
+          </div>
+          {/* Which JARVIS services are live, so a fallback is never a surprise mid-pitch. */}
+          <div className="hud__row">
+            <span className="mono-sm t-3">JARVIS</span>
+            <span className="mono-sm hud__health">
+              <span className={health.tts ? 't-ok' : 't-4'}>Voice · {health.tts ? 'ElevenLabs' : 'Browser'}</span>
+              <span className={health.chat ? 't-ok' : 't-4'}>Brain · {health.chat ? 'Gemini' : 'Scripted'}</span>
+              <span className={health.stt ? 't-ok' : 't-4'}>Ears · {health.stt ? 'Mic' : 'Typed'}</span>
             </span>
           </div>
           <div className="hud__row">
@@ -44,6 +55,10 @@ export function PresenterHUD() {
             </button>
           </div>
           <div className="hud__keys mono-sm t-3">
+            <span><Kbd>V</Kbd> hold to talk</span>
+            <span><Kbd>F</Kbd> Content Forge</span>
+            <span><Kbd>G</Kbd> hand gestures</span>
+            <span><Kbd>W</Kbd> wake-up replay</span>
             <span><Kbd>Space</Kbd>/<Kbd>→</Kbd> advance</span>
             <span><Kbd>⌘K</Kbd> commands</span>
             {hasRoom() && <span><Kbd>C</Kbd> room / execution</span>}

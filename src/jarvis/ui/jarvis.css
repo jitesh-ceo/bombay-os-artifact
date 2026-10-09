@@ -240,3 +240,5 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+
+.hud__health { display: flex; flex-direction: column; align-items: flex-end; gap: 0.15rem; white-space: nowrap; }
