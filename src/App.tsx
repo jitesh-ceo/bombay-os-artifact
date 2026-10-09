@@ -13,6 +13,8 @@ import { ActivityLedger } from './features/shell/ActivityLedger';
 import { TopBar } from './features/shell/TopBar';
 import { SignalRail } from './features/signals/SignalRail';
 import { OperatingStage } from './features/stage/OperatingStage';
+import { JarvisProvider } from './jarvis/JarvisProvider';
+import { Subtitles } from './jarvis/ui/Subtitles';
 import { AppProvider, useAppState } from './state/AppProvider';
 
 function Shell() {
@@ -38,6 +40,7 @@ function Shell() {
           <PresenterHUD />
         </LayoutGroup>
       )}
+      <Subtitles />
       <BootSequence />
     </div>
   );
@@ -47,7 +50,9 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
       <AppProvider>
-        <Shell />
+        <JarvisProvider>
+          <Shell />
+        </JarvisProvider>
       </AppProvider>
     </MotionConfig>
   );

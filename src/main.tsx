@@ -19,6 +19,7 @@ import './styles/map.css';
 import './styles/extras.css';
 import './styles/room.css';
 import './styles/hud.css';
+import './jarvis/ui/jarvis.css';
 import App from './App';
 
 createRoot(document.getElementById('root')!).render(

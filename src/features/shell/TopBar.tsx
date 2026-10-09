@@ -1,10 +1,11 @@
 import { Command, LayoutDashboard, Plus, Sunrise, UserRound, Volume2, VolumeX, Workflow } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { IntegrationMark } from '../../components/IntegrationMark';
-import { BrandMark } from '../../components/primitives';
 import { client, os } from '../../data/client';
 import type { IntegrationId } from '../../data/integrations';
 import { hasRoom } from '../../data/prospect';
+import { useJarvis } from '../../jarvis/JarvisProvider';
+import { ArcReactor } from '../../jarvis/ui/ArcReactor';
 import { morning, signals } from '../../data/signals';
 import { useAppState, useDispatch } from '../../state/AppProvider';
 import type { AppState } from '../../state/types';
@@ -27,6 +28,12 @@ function simClock(state: AppState, now: number) {
   return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 }
 
+// Click the reactor to type to JARVIS instead of speaking.
+function TopReactor() {
+  const j = useJarvis();
+  return <ArcReactor onClick={j.openTyping} />;
+}
+
 export function TopBar() {
   const state = useAppState();
   const dispatch = useDispatch();
@@ -39,7 +46,7 @@ export function TopBar() {
   return (
     <header className="topbar">
       <div className="topbar__id">
-        <BrandMark />
+        <TopReactor />
         <span className="topbar__os">{os.name}</span>
         <span className="topbar__maker">by {os.maker}</span>
         <span className="topbar__sep" />

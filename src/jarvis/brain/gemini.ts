@@ -1,7 +1,13 @@
 // The open-ended half of JARVIS's brain: Gemini through the local proxy, with a scripted fallback.
+import { pick } from '../../data/prospect';
 import { JARVIS_PERSONA } from './persona';
 
-export const FALLBACK_REPLY = "I can run a brand deal, check what's trending, build a video package, or show you the numbers, sir. Which would you like?";
+// What JARVIS offers when it cannot answer freely. No honorific: the user may be anyone.
+export const FALLBACK_REPLY = pick({
+  creator: "I can answer the brand deal, ride the viral reel, build this week’s uploads, make a video package, or show you the numbers. Which would you like?",
+  studio: "I can answer the client brief, fix the campaign performance, prepare the client reports, make a video package, or show you the numbers. Which would you like?",
+  realestate: "I can answer the new enquiry, follow up the stalled deal, prepare the leadership report, or show you the numbers. Which would you like?",
+});
 
 export interface JarvisReply {
   text: string;

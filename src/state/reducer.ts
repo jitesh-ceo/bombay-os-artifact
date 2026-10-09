@@ -12,7 +12,8 @@ const SOUND_KEY = 'bombay-os.sound';
 
 function savedSound() {
   try {
-    return localStorage.getItem(SOUND_KEY) === 'on';
+    // On unless the presenter turned it off: JARVIS speaks by default.
+    return localStorage.getItem(SOUND_KEY) !== 'off';
   } catch {
     return false;
   }
