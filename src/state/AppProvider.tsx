@@ -3,6 +3,7 @@ import { hasRoom } from '../data/prospect';
 import { signals } from '../data/signals';
 import { workflows } from '../data/workflows';
 import { useSoundCues } from '../sound/useSoundCues';
+import { advanceActions, firstUnapproved } from './advance';
 import { AUTONOMY, effAutonomy, effSpeed } from './autonomy';
 import { getEvents } from './compile';
 import { createInitialState, persistSound, reducer } from './reducer';
@@ -86,39 +87,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function firstUnapproved(state: AppState) {
-  return Object.entries(state.run.outputs).find(([, s]) => s !== 'approved')?.[0] ?? null;
-}
+export { firstUnapproved };
 
 // Presenter-first keyboard control. Space / Right advances whatever is next.
 export function presenterAdvance(state: AppState, dispatch: Dispatch<Action>) {
-  const now = Date.now();
-  if (!state.bootDone) return dispatch({ type: 'BOOT_DONE' });
-  if (state.ui.overlay === 'morning') return dispatch({ type: 'OVERLAY', overlay: 'roi' });
-  if (state.ui.viewer || state.ui.drawer || state.ui.overlay || state.timelapse.active) return;
-  const { run } = state;
-  switch (run.status) {
-    case 'idle':
-      return dispatch({ type: 'START', now });
-    case 'running':
-    case 'paused':
-      return dispatch({ type: 'ADVANCE', now });
-    case 'blocked':
-      if (run.block?.status === 'required') dispatch({ type: 'REQUEST_RESOURCE', id: run.block.resourceId, now });
-      return;
-    case 'awaitingApproval': {
-      if (effAutonomy(state) === 'autopilot') return;
-      const wf = workflows[run.workflowId];
-      const id = effAutonomy(state) === 'draft' ? (firstUnapproved(state) ?? wf.primaryOutput) : wf.primaryOutput;
-      return dispatch({ type: 'OPEN_VIEWER', id });
-    }
-    case 'complete': {
-      const next = signals.find((s) => !state.handled[s.id]);
-      if (next) dispatch({ type: 'SELECT_SIGNAL', id: next.id });
-      else dispatch({ type: 'OVERLAY', overlay: 'roi' });
-      return;
-    }
-  }
+  advanceActions(state, Date.now()).forEach(dispatch);
 }
 
 function usePresenterKeys(state: AppState, dispatch: Dispatch<Action>) {
