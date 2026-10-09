@@ -21,7 +21,8 @@ export type JarvisIntent =
   | { kind: 'forge'; topic: string }
   | { kind: 'gestures'; on: boolean }
   | { kind: 'wake' }
-  | { kind: 'mute'; on: boolean };
+  | { kind: 'mute'; on: boolean }
+  | { kind: 'lang'; lang: 'en' | 'ar' };
 
 /** Lower-case, strip Arabic diacritics and accents, collapse spaces. */
 export const norm = (s: string) =>
@@ -78,6 +79,9 @@ export function matchIntent(text: string): JarvisIntent | null {
   }
 
   if (has(q, ['wake up', 'اصحى', 'اصح'])) return { kind: 'wake' };
+  // Language before mute: "تكلم انجليزي" means speak English, not unmute.
+  if (/\b(switch to|speak|talk in|use) arabic\b/.test(q) || has(q, ['بالعربي', 'عربي'])) return { kind: 'lang', lang: 'ar' };
+  if (/\b(switch to|speak|talk in|use) english\b/.test(q) || has(q, ['انجليزي', 'إنجليزي', 'بالانجليزي'])) return { kind: 'lang', lang: 'en' };
   if (has(q, ['unmute', 'sound on', 'speak up', 'تكلم'])) return { kind: 'mute', on: false };
   if (has(q, ['mute', 'be quiet', 'silence', 'stop talking', 'اسكت'])) return { kind: 'mute', on: true };
   if (/\bgestures?\b|hand control|الإيماءات|الايماءات/.test(q)) {

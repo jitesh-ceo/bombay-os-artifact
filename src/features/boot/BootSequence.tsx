@@ -8,6 +8,7 @@ import { morningBriefing } from '../../jarvis/briefing';
 import { ArcReactor } from '../../jarvis/ui/ArcReactor';
 import { audioContext, sfx } from '../../sound/sound';
 import { useAppState, useDispatch } from '../../state/AppProvider';
+import { pageActivated, wakeDecision } from './wake';
 
 type Phase = 'dormant' | 'armed' | 'igniting';
 
@@ -21,6 +22,8 @@ export function BootSequence() {
   const jarvis = useJarvis();
   const [phase, setPhase] = useState<Phase>('dormant');
   const [n, setN] = useState(0);
+  // Heard "Wake up" before any click: one click will now wake JARVIS with sound.
+  const [heardWake, setHeardWake] = useState(false);
   const briefing = useRef(false);
   const live = useRef({ phase, bootDone, sound, jarvis });
   live.current = { phase, bootDone, sound, jarvis };
@@ -48,7 +51,8 @@ export function BootSequence() {
             live.current.jarvis.stop();
             dispatch({ type: 'REBOOT' });
             setPhase('armed');
-          } else ignite();
+          } else if (wakeDecision(pageActivated()) === 'ask-click') setHeardWake(true);
+          else ignite();
         },
       }),
     [jarvis.register, dispatch],
@@ -88,6 +92,7 @@ export function BootSequence() {
     const t = window.setTimeout(() => {
       dispatch({ type: 'BOOT_DONE' });
       setPhase('dormant');
+      setHeardWake(false);
       briefing.current = true;
       window.setTimeout(() => live.current.jarvis.say(morningBriefing()), BRIEF_AFTER_MS);
     }, 450);
@@ -104,7 +109,7 @@ export function BootSequence() {
       {!bootDone && (
         <motion.div
           className={`boot boot--${phase}`}
-          onClick={phase === 'dormant' ? arm : ignite}
+          onClick={phase === 'dormant' && !heardWake ? arm : ignite}
           exit={{ opacity: 0, scale: 1.04, transition: { duration: 0.7, ease: [0.65, 0, 0.35, 1] } }}
         >
           <div className="boot__center">
@@ -127,7 +132,8 @@ export function BootSequence() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.35 }}
               >
-                {phase === 'dormant' && (
+                {phase === 'dormant' && heardWake && <span className="t-acc">I heard you. Click once so I can speak.</span>}
+                {phase === 'dormant' && !heardWake && (
                   <>
                     Click to arm JARVIS <span className="t-4">·</span> or press <kbd className="kbd">Space</kbd> to wake it now
                   </>

@@ -6,6 +6,7 @@ class FakeUtterance {
   voice: SpeechSynthesisVoice | null = null;
   rate = 1;
   pitch = 1;
+  lang = '';
   onend: (() => void) | null = null;
   onerror: (() => void) | null = null;
   constructor(text: string) {
@@ -54,7 +55,7 @@ describe('createSpeaker', () => {
   it('skips the voice service when health says it is not configured', async () => {
     const fetchImpl = vi.fn(async (url: string) => (url === '/api/health' ? json({ tts: false, chat: false }) : json({}))) as unknown as typeof fetch;
     const synth = fakeSynth();
-    const playAudio = vi.fn(async () => {});
+    const playAudio = vi.fn(async () => true);
     const speaker = createSpeaker({ fetchImpl, synth: synth as unknown as SpeechSynthesis, Utterance: FakeUtterance as unknown as typeof SpeechSynthesisUtterance, playAudio });
     await speaker.say('Hello.');
     expect(fetchImpl).toHaveBeenCalledTimes(1);
@@ -83,6 +84,13 @@ describe('createSpeaker', () => {
     expect(synth.speak).not.toHaveBeenCalled();
   });
 
+  it('marks Arabic lines as Arabic for the browser voice', async () => {
+    const fetchImpl = vi.fn(async () => json({ tts: false, chat: false })) as unknown as typeof fetch;
+    const { synth, speaker } = setup(fetchImpl);
+    await speaker.say('أهلاً، كيف أقدر أساعدك؟');
+    expect((synth.spoken[0] as unknown as { lang: string }).lang).toBe('ar-AE');
+  });
+
   it('reports speaking and idle states', async () => {
     const fetchImpl = vi.fn(async () => json({ tts: false, chat: false })) as unknown as typeof fetch;
     const { speaker } = setup(fetchImpl);
@@ -105,6 +113,11 @@ describe('pickVoice', () => {
     expect(pickVoice([v('Hans', 'de-DE'), v('Samantha', 'en-US')])?.name).toBe('Samantha');
   });
 
+  it('picks an Arabic voice for Arabic text', () => {
+    expect(pickVoice([v('Daniel', 'en-GB'), v('Maged', 'ar-SA')], 'ar')?.name).toBe('Maged');
+    expect(pickVoice([v('Daniel', 'en-GB')], 'ar')).toBeUndefined();
+  });
+
   it('returns undefined when there are no voices', () => {
     expect(pickVoice([])).toBeUndefined();
   });
@@ -116,7 +129,7 @@ describe('ElevenLabs path', () => {
 
   it('plays the ElevenLabs audio and does not use the browser voice', async () => {
     const synth = fakeSynth();
-    const playAudio = vi.fn(async () => {});
+    const playAudio = vi.fn(async () => true);
     const fetchImpl = route(new Response(new Blob(['mp3'], { type: 'audio/mpeg' })));
     const speaker = createSpeaker({ fetchImpl, synth: synth as unknown as SpeechSynthesis, Utterance: FakeUtterance as unknown as typeof SpeechSynthesisUtterance, playAudio });
     await speaker.say('At your service.');
@@ -126,9 +139,19 @@ describe('ElevenLabs path', () => {
     expect(JSON.parse(body.body)).toEqual({ text: 'At your service.' });
   });
 
+  it('falls back to the browser voice when the audio cannot play', async () => {
+    const synth = fakeSynth();
+    const playAudio = vi.fn(async () => false);
+    const fetchImpl = route(new Response(new Blob(['mp3'], { type: 'audio/mpeg' })));
+    const speaker = createSpeaker({ fetchImpl, synth: synth as unknown as SpeechSynthesis, Utterance: FakeUtterance as unknown as typeof SpeechSynthesisUtterance, playAudio });
+    await speaker.say('Can you hear me?');
+    expect(playAudio).toHaveBeenCalledTimes(1);
+    expect(synth.spoken[0].text).toBe('Can you hear me?');
+  });
+
   it('falls back to the browser voice when the voice service errors', async () => {
     const synth = fakeSynth();
-    const playAudio = vi.fn(async () => {});
+    const playAudio = vi.fn(async () => true);
     const fetchImpl = route(new Response('{"error":"upstream"}', { status: 502 }));
     const speaker = createSpeaker({ fetchImpl, synth: synth as unknown as SpeechSynthesis, Utterance: FakeUtterance as unknown as typeof SpeechSynthesisUtterance, playAudio });
     await speaker.say('Fallback, sir.');

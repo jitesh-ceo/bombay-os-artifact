@@ -32,9 +32,12 @@ export function GestureController() {
   const live = useRef({ state, jarvis });
   live.current = { state, jarvis };
   const session = useRef<{ stop: () => void; stream: MediaStream } | null>(null);
+  const attempt = useRef(0);
 
   useEffect(() => {
     const stop = () => {
+      // Invalidates any start still waiting on the camera or the model.
+      attempt.current++;
       session.current?.stop();
       session.current?.stream.getTracks().forEach((t) => t.stop());
       session.current = null;
@@ -69,13 +72,17 @@ export function GestureController() {
 
     const start = async () => {
       if (session.current) return;
+      const mine = ++attempt.current;
+      const cancelled = () => mine !== attempt.current;
       let stream: MediaStream | null = null;
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 360, facingMode: 'user' }, audio: false });
+        if (cancelled()) return stream.getTracks().forEach((t) => t.stop());
         const v = video.current!;
         v.srcObject = stream;
         await v.play();
         const { startHands } = await import('./gesture/hands');
+        if (cancelled()) return stream.getTracks().forEach((t) => t.stop());
         const stopHands = await startHands(
           v,
           (g) => {
@@ -86,9 +93,14 @@ export function GestureController() {
           },
           draw,
         );
+        if (cancelled()) {
+          stopHands();
+          return stream.getTracks().forEach((t) => t.stop());
+        }
         session.current = { stop: stopHands, stream };
         setActive(true);
       } catch (err) {
+        if (cancelled()) return stream?.getTracks().forEach((t) => t.stop());
         console.warn('[gestures] camera or hand tracking failed', err);
         stream?.getTracks().forEach((t) => t.stop());
         live.current.jarvis.say('The camera is unavailable, so gestures stay off.');

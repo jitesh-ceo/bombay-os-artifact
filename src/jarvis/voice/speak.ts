@@ -13,8 +13,11 @@ export interface Speaker {
   onState(cb: (s: SpeakState) => void): () => void;
 }
 
-/** Plays an mp3 blob until it ends or the signal aborts, reporting loudness through `meter`. */
-export type PlayAudio = (blob: Blob, signal: AbortSignal, meter: (read: () => number) => void) => Promise<void>;
+/**
+ * Plays an mp3 blob until it ends or the signal aborts, reporting loudness through `meter`.
+ * Resolves false if the audio could not play, so the caller can fall back to the browser voice.
+ */
+export type PlayAudio = (blob: Blob, signal: AbortSignal, meter: (read: () => number) => void) => Promise<boolean>;
 
 interface Options {
   fetchImpl?: typeof fetch;
@@ -26,7 +29,10 @@ interface Options {
 
 const MALE_UK = ['daniel', 'arthur', 'google uk english male', 'microsoft ryan', 'microsoft george', 'oliver', 'george', 'ryan'];
 
-export function pickVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined {
+const ARABIC = /[\u0600-\u06FF]/;
+
+export function pickVoice(voices: SpeechSynthesisVoice[], lang: 'en' | 'ar' = 'en'): SpeechSynthesisVoice | undefined {
+  if (lang === 'ar') return voices.find((v) => v.lang.toLowerCase().startsWith('ar'));
   const uk = voices.filter((v) => v.lang.toLowerCase().replace('_', '-').startsWith('en-gb'));
   return (
     uk.find((v) => MALE_UK.some((n) => v.name.toLowerCase().includes(n))) ??
@@ -37,14 +43,16 @@ export function pickVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice 
 
 /** Default playback: an <audio> element routed through the shared AudioContext with an analyser. */
 export const playThroughAudioContext: PlayAudio = (blob, signal, meter) =>
-  new Promise<void>((resolve) => {
+  new Promise<boolean>((resolve) => {
+    // Before any click the browser keeps audio silent; say so instead of "playing" nothing.
+    if ((navigator as { userActivation?: { hasBeenActive: boolean } }).userActivation?.hasBeenActive === false) return resolve(false);
     const url = URL.createObjectURL(blob);
     const el = new Audio(url);
-    const done = () => {
+    const done = (played: boolean) => {
       el.pause();
       URL.revokeObjectURL(url);
       meter(() => 0);
-      resolve();
+      resolve(played);
     };
     const ctx = audioContext();
     if (ctx) {
@@ -59,10 +67,10 @@ export const playThroughAudioContext: PlayAudio = (blob, signal, meter) =>
         return Math.min(1, peak / 64);
       });
     }
-    el.onended = done;
-    el.onerror = done;
-    signal.addEventListener('abort', done, { once: true });
-    el.play().catch(done);
+    el.onended = () => done(true);
+    el.onerror = () => done(false);
+    signal.addEventListener('abort', () => done(true), { once: true });
+    el.play().catch(() => done(false));
   });
 
 export function createSpeaker(opts: Options = {}): Speaker {
@@ -104,8 +112,7 @@ export function createSpeaker(opts: Options = {}): Speaker {
       if (!r.ok) return false;
       const blob = await r.blob();
       if (signal.aborted) return true;
-      await playAudio(blob, signal, (fn) => (read = fn));
-      return true;
+      return await playAudio(blob, signal, (fn) => (read = fn));
     } catch {
       return signal.aborted;
     }
@@ -115,7 +122,9 @@ export function createSpeaker(opts: Options = {}): Speaker {
     if (!synth || !Utterance) return Promise.resolve();
     return new Promise<void>((resolve) => {
       const u = new Utterance(text);
-      const voice = pickVoice(synth.getVoices());
+      const lang = ARABIC.test(text) ? 'ar' : 'en';
+      u.lang = lang === 'ar' ? 'ar-AE' : 'en-GB';
+      const voice = pickVoice(synth.getVoices(), lang);
       if (voice) u.voice = voice;
       u.rate = 1;
       u.pitch = 0.9;

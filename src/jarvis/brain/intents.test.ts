@@ -39,6 +39,13 @@ describe('matchIntent', () => {
     expect(matchIntent('start over')).toEqual({ kind: 'reset' });
   });
 
+  it('switches the listening language', () => {
+    expect(matchIntent('switch to Arabic')).toEqual({ kind: 'lang', lang: 'ar' });
+    expect(matchIntent('speak English')).toEqual({ kind: 'lang', lang: 'en' });
+    expect(matchIntent('تكلم انجليزي')).toEqual({ kind: 'lang', lang: 'en' });
+    expect(matchIntent('كلمني بالعربي')).toEqual({ kind: 'lang', lang: 'ar' });
+  });
+
   it('understands Arabic', () => {
     expect(matchIntent('اعرض العائد')).toEqual({ kind: 'overlay', overlay: 'roi' });
     expect(matchIntent('التالي')).toEqual({ kind: 'advance' });

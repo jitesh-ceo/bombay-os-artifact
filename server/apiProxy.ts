@@ -2,6 +2,7 @@
 // server so the API keys stay in .env on the presenter's machine and never reach the browser.
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import type { Plugin } from 'vite';
 
 export interface ProxyEnv {
@@ -102,7 +103,7 @@ function isChatBody(b: unknown): b is ChatBody {
 
 type Middleware = (req: IncomingMessage, res: ServerResponse, next: () => void) => void;
 
-function middleware(env: ProxyEnv): Middleware {
+export function proxyMiddleware(env: ProxyEnv): Middleware {
   return (req, res, next) => {
     const path = (req.url ?? '').split('?')[0];
     if (path === '/api/health') return send(res, 200, health(env));
@@ -116,11 +117,15 @@ function middleware(env: ProxyEnv): Middleware {
         if (typeof text !== 'string' || !text.trim()) return send(res, 400, { error: 'bad-request' });
         const up = ttsRequest(env, text);
         if (!up) return send(res, 503, { error: 'not-configured' });
-        const r = await fetch(up.url, { ...up.init, signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
+        // Stop downloading if the browser goes away (a new line cut this one off).
+        const ctrl = new AbortController();
+        res.on('close', () => ctrl.abort());
+        const r = await fetch(up.url, { ...up.init, signal: AbortSignal.any([ctrl.signal, AbortSignal.timeout(UPSTREAM_TIMEOUT_MS)]) });
         if (!r.ok || !r.body) return send(res, 502, { error: 'upstream', status: r.status });
         res.statusCode = 200;
         res.setHeader('content-type', 'audio/mpeg');
-        Readable.fromWeb(r.body as import('node:stream/web').ReadableStream).pipe(res);
+        // pipeline (not .pipe) so a stream that fails half-way rejects here instead of crashing the server.
+        await pipeline(Readable.fromWeb(r.body as import('node:stream/web').ReadableStream), res);
         return;
       }
       if (!isChatBody(body)) return send(res, 400, { error: 'bad-request' });
@@ -140,10 +145,10 @@ export function apiProxy(env: ProxyEnv): Plugin {
   return {
     name: 'jarvis-api-proxy',
     configureServer(server) {
-      server.middlewares.use(middleware(env));
+      server.middlewares.use(proxyMiddleware(env));
     },
     configurePreviewServer(server) {
-      server.middlewares.use(middleware(env));
+      server.middlewares.use(proxyMiddleware(env));
     },
   };
 }

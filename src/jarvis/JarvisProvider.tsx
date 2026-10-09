@@ -93,6 +93,15 @@ export function JarvisProvider({ children }: { children: ReactNode }) {
     setTypeRequest((n) => n + 1);
   }, []);
 
+  // Stable for the life of the provider: features register in effects, and a new identity on every
+  // render would tear them down (it switched hand tracking off the first time JARVIS spoke).
+  const register = useCallback((h: Partial<Hooks>) => {
+    Object.assign(hooks.current, h);
+    return () => {
+      for (const k of Object.keys(h) as (keyof Hooks)[]) if (hooks.current[k] === h[k]) delete hooks.current[k];
+    };
+  }, []);
+
   const say = useCallback(
     (text: string) => {
       if (!text.trim()) return;
@@ -142,6 +151,9 @@ export function JarvisProvider({ children }: { children: ReactNode }) {
           case 'gestures':
             setGestures(intent.on);
             break;
+          case 'lang':
+            listener.setLang(intent.lang === 'ar' ? 'ar-AE' : 'en-GB');
+            return say(intent.lang === 'ar' ? 'تمام، أسمعك بالعربي.' : 'Listening in English.');
           default:
             intentToActions(intent, s, Date.now()).forEach(dispatch);
         }
@@ -309,12 +321,7 @@ export function JarvisProvider({ children }: { children: ReactNode }) {
       setGestures,
       forge,
       openForge: () => hooks.current.forgePrompt?.(),
-      register(h) {
-        Object.assign(hooks.current, h);
-        return () => {
-          for (const k of Object.keys(h) as (keyof Hooks)[]) if (hooks.current[k] === h[k]) delete hooks.current[k];
-        };
-      },
+      register,
     }),
     [forge, gestures, handle, health, heard, listener, listening, micBlocked, openTyping, say, setGestures, speaker, speaking, spoken, thinking, typeRequest, typingOpen],
   );
