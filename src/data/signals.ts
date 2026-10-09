@@ -43,7 +43,7 @@ interface Pack {
 }
 
 const pack = pick<Pack>({
-  agency: {
+  studio: {
     signals: [
       {
         id: 'sig-brief',

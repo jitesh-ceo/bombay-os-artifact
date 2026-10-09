@@ -400,7 +400,7 @@ const realestate: Record<string, Deliverable> = {
   },
 };
 
-const agency: Record<string, Deliverable> = {
+const studio: Record<string, Deliverable> = {
   proposal: {
     id: 'proposal',
     kind: 'proposal',
@@ -779,4 +779,4 @@ const agency: Record<string, Deliverable> = {
   },
 };
 
-export const deliverables: Record<string, Deliverable> = pick({ agency, realestate });
+export const deliverables: Record<string, Deliverable> = pick({ studio, realestate });

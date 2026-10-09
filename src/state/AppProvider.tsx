@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useReducer, type Dispatch, type ReactNode } from 'react';
-import { prospect } from '../data/prospect';
+import { hasRoom } from '../data/prospect';
 import { signals } from '../data/signals';
 import { workflows } from '../data/workflows';
 import { useSoundCues } from '../sound/useSoundCues';
@@ -147,7 +147,7 @@ function usePresenterKeys(state: AppState, dispatch: Dispatch<Action>) {
       if (state.ui.overlay === 'palette' || state.ui.overlay === 'setup') return;
       const k = e.key.toLowerCase();
       const now = Date.now();
-      if (k === 'c' && state.bootDone && prospect.preset === 'agency') {
+      if (k === 'c' && state.bootDone && hasRoom()) {
         dispatch({ type: 'ROOM', open: !state.ui.room });
         return;
       }

@@ -1,4 +1,4 @@
-import { prospect } from '../data/prospect';
+import { usesUsd } from '../data/prospect';
 import { signals } from '../data/signals';
 import { workflows, type Workflow } from '../data/workflows';
 import type { AppState } from './types';
@@ -44,7 +44,7 @@ export const fmtClock = (t: number, seconds = true) =>
 const INR_PER_USD = 83;
 
 export const fmtCrore = (lakhs: number) => {
-  if (prospect.preset === 'agency') {
+  if (usesUsd()) {
     const usd = (lakhs * 100_000) / INR_PER_USD;
     if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2)}M`;
     if (usd >= 10_000) return `$${Math.round(usd / 1000)}K`;

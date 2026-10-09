@@ -23,7 +23,7 @@ export interface NewsFeed {
 
 // Five stories, newest first. Anything older than 48 hours is already gone.
 export const newsFeed: NewsFeed = pick<NewsFeed>({
-  agency: {
+  studio: {
     items: [
       {
         id: 'ae-meta',

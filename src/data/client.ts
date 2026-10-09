@@ -10,7 +10,7 @@ export const os = {
 };
 
 export const client = pick({
-  agency: {
+  studio: {
     name: '{client}',
     initials: '{initials}',
     descriptor: 'Digital marketing & technology · Dubai',
@@ -30,7 +30,7 @@ export const client = pick({
 
 // Figures shown in the impact meter before any workflow runs.
 export const impactBaseline = pick({
-  agency: { hoursSaved: 11.5, pipelineLakhs: 186, tasksCompleted: 29 },
+  studio: { hoursSaved: 11.5, pipelineLakhs: 186, tasksCompleted: 29 },
   realestate: { hoursSaved: 14.5, pipelineLakhs: 4280, tasksCompleted: 37 },
 });
 
@@ -43,7 +43,7 @@ export type AmbientEntry = {
 
 // Ledger entries that make the system feel alive before the demo starts.
 export const ambientLedger: AmbientEntry[] = pick<AmbientEntry[]>({
-  agency: [
+  studio: [
     { minutesAgo: 192, text: 'Overnight inbox triaged · 57 emails, 4 need action', source: 'gmail' },
     { minutesAgo: 150, text: 'Ad spend synced · 12 client accounts', source: 'drive', tone: 'ok' },
     { minutesAgo: 88, text: 'Performance anomaly detected · Urban Brew, Meta Ads', source: 'gmail', tone: 'flag' },
@@ -63,7 +63,7 @@ export const boot = {
 
 // Inputs for the closing "What this means for {client}" screen.
 export const roi = pick({
-  agency: {
+  studio: {
     teamSize: 24,
     teamMin: 5,
     teamMax: 120,

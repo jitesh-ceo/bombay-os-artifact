@@ -4,7 +4,7 @@ import { IntegrationMark } from '../../components/IntegrationMark';
 import { BrandMark } from '../../components/primitives';
 import { client, os } from '../../data/client';
 import type { IntegrationId } from '../../data/integrations';
-import { prospect } from '../../data/prospect';
+import { hasRoom } from '../../data/prospect';
 import { morning, signals } from '../../data/signals';
 import { useAppState, useDispatch } from '../../state/AppProvider';
 import type { AppState } from '../../state/types';
@@ -65,7 +65,7 @@ export function TopBar() {
       </div>
 
       <div className="topbar__right">
-        {prospect.preset === 'agency' && (
+        {hasRoom() && (
           <button
             className="chip-btn"
             onClick={() => dispatch({ type: 'ROOM', open: !state.ui.room })}

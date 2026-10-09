@@ -63,7 +63,7 @@ function SetupInner() {
         <div className="setup__field">
           <span className="mono-sm t-3">Industry preset</span>
           <div className="setup__presets">
-            {PRESETS.map((p) => (
+            {PRESETS.filter((p) => !p.hidden || p.id === preset).map((p) => (
               <button type="button" key={p.id} className={`setup__preset ${p.id === preset ? 'is-on' : ''}`} onClick={() => setPreset(p.id)}>
                 <span className="setup__preset-top">
                   <span>{p.label}</span>
@@ -88,7 +88,7 @@ function SetupInner() {
             <Rocket size={14} /> Launch for {name.trim() || def.defaultName}
           </button>
           {prospect.personalised && (
-            <button type="button" className="btn btn--ghost" onClick={() => launchProspect('', 'agency')}>
+            <button type="button" className="btn btn--ghost" onClick={() => launchProspect('', 'creator')}>
               <RotateCcw size={13} /> Reset to default
             </button>
           )}

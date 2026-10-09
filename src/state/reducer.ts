@@ -1,7 +1,7 @@
 import { ambientLedger, client, impactBaseline } from '../data/client';
 import { deliverables } from '../data/deliverables';
 import { integrationById, integrations, restrictedResources, type IntegrationId } from '../data/integrations';
-import { prospect } from '../data/prospect';
+import { hasRoom } from '../data/prospect';
 import { signals } from '../data/signals';
 import { workflows, workflowForSignal } from '../data/workflows';
 import { AUTONOMY, autonomyLabel, effAutonomy, effHold, effInterrupt } from './autonomy';
@@ -81,7 +81,7 @@ export function createInitialState(now: number): AppState {
     autonomy: 'approve',
     sound: savedSound(),
     timelapse: { active: false, index: 0, done: false },
-    ui: { drawer: false, drawerFocus: null, viewer: null, view: 'map', overlay: null, room: prospect.preset === 'agency' },
+    ui: { drawer: false, drawerFocus: null, viewer: null, view: 'map', overlay: null, room: hasRoom() },
     presenter: { hud: false, speed: 1, hold: false, interrupt: true },
   };
 }

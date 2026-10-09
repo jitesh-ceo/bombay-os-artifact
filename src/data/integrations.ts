@@ -163,7 +163,7 @@ const catalogue: Record<IntegrationId, CatalogueEntry> = {
 };
 
 const lineup = pick<[IntegrationId, IntegrationStatus][]>({
-  agency: [
+  studio: [
     ['gmail', 'connected'],
     ['drive', 'connected'],
     ['notion', 'connected'],
@@ -208,7 +208,7 @@ export interface RestrictedResource {
 }
 
 export const restrictedResources: Record<string, RestrictedResource> = pick({
-  agency: {
+  studio: {
     'drive-finance': {
       id: 'drive-finance',
       integrationId: 'drive' as IntegrationId,

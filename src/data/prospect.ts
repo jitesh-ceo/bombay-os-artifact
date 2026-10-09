@@ -1,22 +1,39 @@
 // Resolves who the demo is personalised for, before any other data module loads.
-// Priority: URL (?client=Acme&preset=agency) → saved setup (localStorage) → preset default.
+// Priority: URL (?client=Acme&preset=creator) → saved setup (localStorage) → preset default.
 
-export type PresetId = 'agency' | 'realestate';
+export type PresetId = 'creator' | 'studio' | 'realestate';
 
-export const PRESETS: { id: PresetId; label: string; defaultName: string; blurb: string }[] = [
+export const PRESETS: { id: PresetId; label: string; defaultName: string; blurb: string; hidden?: boolean }[] = [
   {
-    id: 'agency',
-    label: 'Digital & tech agency',
-    defaultName: 'Northstar Studio',
-    blurb: 'Client briefs, campaign performance, weekly client reports',
+    id: 'creator',
+    label: 'Creator & small team',
+    defaultName: 'Layla Noor',
+    blurb: 'Brand deals, viral moments, weekly upload packs',
+  },
+  {
+    id: 'studio',
+    label: 'Creator-led studio',
+    defaultName: 'Falcon & Co Creative',
+    blurb: 'Client campaigns, creator roster, weekly client reports',
   },
   {
     id: 'realestate',
     label: 'Real estate developer',
     defaultName: 'Aurelia Estates',
     blurb: 'Buyer enquiries, stalled deals, leadership reporting',
+    hidden: true,
   },
 ];
+
+const DEFAULT_PRESET: PresetId = 'creator';
+// Links made before the creator re-theme used ?preset=agency.
+const LEGACY: Record<string, PresetId> = { agency: 'studio' };
+
+export function resolvePreset(raw: string | null | undefined): PresetId {
+  if (!raw) return DEFAULT_PRESET;
+  const id = LEGACY[raw] ?? raw;
+  return PRESETS.some((p) => p.id === id) ? (id as PresetId) : DEFAULT_PRESET;
+}
 
 const STORAGE_KEY = 'bombay-os.prospect';
 
@@ -28,8 +45,7 @@ function resolve(): { name: string; preset: PresetId; personalised: boolean } {
   } catch {
     saved = {};
   }
-  const rawPreset = params.get('preset') ?? saved.preset ?? 'agency';
-  const preset: PresetId = PRESETS.some((p) => p.id === rawPreset) ? (rawPreset as PresetId) : 'agency';
+  const preset = resolvePreset(params.get('preset') ?? saved.preset);
   const name = (params.get('client') ?? saved.name ?? '').trim();
   const def = PRESETS.find((p) => p.id === preset)!;
   return { name: name || def.defaultName, preset, personalised: Boolean(name) };
@@ -65,9 +81,15 @@ export function personalize<T>(value: T): T {
   return value;
 }
 
-export function pick<T>(byPreset: Record<PresetId, T>): T {
-  return personalize(byPreset[prospect.preset]);
+// Creator content falls back to studio until every module has its own creator entry.
+export function pick<T>(byPreset: Omit<Record<PresetId, T>, 'creator'> & { creator?: T }): T {
+  return personalize(byPreset[prospect.preset] ?? byPreset.studio);
 }
+
+// The Control Room exists for the creator presets only.
+export const hasRoom = () => prospect.preset !== 'realestate';
+// Creator presets price in US dollars; real estate in rupees.
+export const usesUsd = () => prospect.preset !== 'realestate';
 
 export function launchProspect(name: string, preset: PresetId) {
   const clean = name.trim();

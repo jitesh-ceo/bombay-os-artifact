@@ -387,7 +387,7 @@ const realestate: Record<string, Workflow> = {
   },
 };
 
-const agency: Record<string, Workflow> = {
+const studio: Record<string, Workflow> = {
   'wf-brief': {
     id: 'wf-brief',
     signalId: 'sig-brief',
@@ -674,7 +674,7 @@ const agency: Record<string, Workflow> = {
   },
 };
 
-export const workflows: Record<string, Workflow> = pick({ agency, realestate });
+export const workflows: Record<string, Workflow> = pick({ studio, realestate });
 
 export const workflowForSignal = (signalId: string) =>
   Object.values(workflows).find((w) => w.signalId === signalId)!;

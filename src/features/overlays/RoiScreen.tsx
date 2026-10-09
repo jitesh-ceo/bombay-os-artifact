@@ -3,7 +3,7 @@ import { ArrowRight, Clock3, Users, X } from 'lucide-react';
 import { useState } from 'react';
 import { BrandMark } from '../../components/primitives';
 import { client, impactBaseline, os, roi } from '../../data/client';
-import { prospect } from '../../data/prospect';
+import { usesUsd } from '../../data/prospect';
 import { signals } from '../../data/signals';
 import { workflowForSignal } from '../../data/workflows';
 import { CountUp } from '../../motion/CountUp';
@@ -24,7 +24,7 @@ const INR_PER_USD = 83;
 const fmtRupees = (n: number) => (n >= 1e7 ? `₹${(n / 1e7).toFixed(2)} Cr` : `₹${(n / 1e5).toFixed(1)}L`);
 
 const fmtMoney = (rupees: number) => {
-  if (prospect.preset !== 'agency') return fmtRupees(rupees);
+  if (!usesUsd()) return fmtRupees(rupees);
   const usd = rupees / INR_PER_USD;
   if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2)}M`;
   if (usd >= 10_000) return `$${Math.round(usd / 1000)}K`;
@@ -91,7 +91,7 @@ function RoiInner() {
                 <small>/ month</small>
               </span>
               <span className="roi__sub">
-                At {prospect.preset === 'agency' ? `$${Math.round(roi.hourlyCost / INR_PER_USD)}` : `₹${roi.hourlyCost.toLocaleString('en-IN')}`} per loaded hour
+                At {usesUsd() ? `$${Math.round(roi.hourlyCost / INR_PER_USD)}` : `₹${roi.hourlyCost.toLocaleString('en-IN')}`} per loaded hour
               </span>
             </div>
             <div className="roi__metric">

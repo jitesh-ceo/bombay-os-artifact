@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Kbd } from '../../components/primitives';
-import { prospect } from '../../data/prospect';
+import { hasRoom } from '../../data/prospect';
 import { getEvents } from '../../state/compile';
 import { useAppState, useDispatch } from '../../state/AppProvider';
 import { t } from '../../motion/transitions';
@@ -46,7 +46,7 @@ export function PresenterHUD() {
           <div className="hud__keys mono-sm t-3">
             <span><Kbd>Space</Kbd>/<Kbd>→</Kbd> advance</span>
             <span><Kbd>⌘K</Kbd> commands</span>
-            {prospect.preset === 'agency' && <span><Kbd>C</Kbd> room / execution</span>}
+            {hasRoom() && <span><Kbd>C</Kbd> room / execution</span>}
             <span><Kbd>M</Kbd> map / stage</span>
             <span><Kbd>A</Kbd> autonomy</span>
             <span><Kbd>T</Kbd> time-lapse</span>
