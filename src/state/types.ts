@@ -93,6 +93,7 @@ export interface AppState {
 
 export type Action =
   | { type: 'BOOT_DONE' }
+  | { type: 'REBOOT' }
   | { type: 'SELECT_SIGNAL'; id: string }
   | { type: 'START'; now: number }
   | { type: 'TICK'; now: number }

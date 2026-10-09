@@ -1,9 +1,9 @@
 // JARVIS's nervous system: ears (speech recognition), brain (intents → Gemini), voice (ElevenLabs →
 // browser) and narration of the running workflow. Everything degrades to a working fallback.
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { briefing } from '../data/signals';
 import { useAppState, useDispatch } from '../state/AppProvider';
 import { askJarvis, FALLBACK_REPLY } from './brain/gemini';
+import { morningBriefing } from './briefing';
 import { intentToActions, matchIntent } from './brain/intents';
 import { buildSnapshot } from './brain/snapshot';
 import { confirmFor, narrationFor } from './narration';
@@ -24,6 +24,8 @@ export interface JarvisApi {
   spoken: string;
   heard: string;
   say(text: string): void;
+  /** Stops whatever JARVIS is saying. */
+  stop(): void;
   handle(text: string): Promise<void>;
   levels(): { mic: number; out: number };
   health: JarvisHealth;
@@ -52,9 +54,6 @@ const Ctx = createContext<JarvisApi | null>(null);
 
 const FINALISE_MS = 700;
 const CAPTURE_MS = 6000;
-
-// Briefing lines are written for the screen ("01  Lumière…"); spoken, the numbering goes.
-const spokenBriefing = () => briefing.map((l) => l.replace(/^\d+\s+/, '')).join(' ');
 
 const typingTarget = (t: EventTarget | null) => {
   const el = t as HTMLElement | null;
@@ -128,7 +127,7 @@ export function JarvisProvider({ children }: { children: ReactNode }) {
             if (hooks.current.wake) return hooks.current.wake();
             return say('Online and listening.');
           case 'briefing':
-            return say(spokenBriefing());
+            return say(morningBriefing());
           case 'mute':
             if (intent.on === s.sound) dispatch({ type: 'TOGGLE_SOUND' });
             if (!intent.on) {
@@ -291,6 +290,7 @@ export function JarvisProvider({ children }: { children: ReactNode }) {
       spoken,
       heard,
       say,
+      stop: () => speaker.cancel(),
       handle,
       levels: () => ({ mic: listener.level(), out: speaker.level() }),
       health,

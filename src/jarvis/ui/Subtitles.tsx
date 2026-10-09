@@ -1,10 +1,33 @@
 // Spoken subtitles: what JARVIS says, what it heard, and a typed fallback when there is no microphone.
 import { AnimatePresence, motion } from 'framer-motion';
 import { Keyboard, Mic } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useJarvis } from '../JarvisProvider';
+import { sentences } from './sentences';
 
 const HOLD_MS = 4500;
+// Roughly the pace of JARVIS's voice, so each subtitle line changes with the speech.
+const MS_PER_CHAR = 62;
+
+/** Steps through the sentences of a line as it is spoken, then fades after the last one. */
+function useSpokenLine(text: string, speaking: boolean) {
+  const [shown, setShown] = useState('');
+  const parts = useMemo(() => sentences(text), [text]);
+  const [i, setI] = useState(0);
+  useEffect(() => setI(0), [text]);
+  useEffect(() => {
+    if (!parts.length) return;
+    setShown(parts[Math.min(i, parts.length - 1)]);
+    if (i < parts.length - 1) {
+      const t = window.setTimeout(() => setI((v) => v + 1), 300 + parts[i].length * MS_PER_CHAR);
+      return () => window.clearTimeout(t);
+    }
+    if (speaking) return;
+    const t = window.setTimeout(() => setShown(''), HOLD_MS);
+    return () => window.clearTimeout(t);
+  }, [parts, i, speaking]);
+  return shown;
+}
 
 function useFading(text: string, hold: boolean) {
   const [shown, setShown] = useState('');
@@ -20,7 +43,7 @@ function useFading(text: string, hold: boolean) {
 
 export function Subtitles() {
   const j = useJarvis();
-  const spoken = useFading(j.spoken, j.mode === 'speaking');
+  const spoken = useSpokenLine(j.spoken, j.mode === 'speaking');
   const heard = useFading(j.heard, j.mode === 'listening');
   const [value, setValue] = useState('');
   const input = useRef<HTMLInputElement>(null);

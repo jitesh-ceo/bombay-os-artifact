@@ -119,3 +119,91 @@
   .reactor__core,
   .reactor--thinking .reactor__ring { animation: none; }
 }
+
+/* ───────── Wake up, JARVIS ───────── */
+.boot {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(20, 80, 120, 0.25), transparent 45%),
+    #010307;
+}
+.boot__center { gap: 1.1rem; }
+.boot__reactor {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 14rem;
+  height: 14rem;
+  transition: opacity 0.8s var(--ease), filter 0.8s var(--ease), transform 1s var(--ease);
+}
+.boot--dormant .boot__reactor { opacity: 0.28; filter: grayscale(0.7) brightness(0.6); }
+.boot--armed .boot__reactor { opacity: 0.75; filter: none; animation: boot-arm 2.4s ease-in-out infinite; }
+.boot--igniting .boot__reactor { opacity: 1; transform: scale(1.12); filter: brightness(1.35) drop-shadow(0 0 2.5rem rgba(79, 216, 255, 0.8)); }
+.boot__reactor .reactor { pointer-events: none; }
+@keyframes boot-arm {
+  0%, 100% { filter: brightness(0.9); }
+  50% { filter: brightness(1.25) drop-shadow(0 0 1.2rem rgba(79, 216, 255, 0.5)); }
+}
+
+.boot__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(79, 216, 255, 0.5);
+  opacity: 0;
+  pointer-events: none;
+}
+.boot--igniting .boot__ring { animation: boot-ring 1.6s var(--ease) both; }
+.boot--igniting .boot__ring--2 { animation-delay: 0.18s; border-style: dashed; }
+.boot--igniting .boot__ring--3 { animation-delay: 0.36s; border-color: rgba(255, 181, 71, 0.5); }
+@keyframes boot-ring {
+  0% { opacity: 0.9; transform: scale(0.6); }
+  100% { opacity: 0; transform: scale(2.6); }
+}
+
+.boot__title {
+  font-family: var(--f-hud);
+  font-size: 3.25rem;
+  font-weight: 700;
+  letter-spacing: 0.55em;
+  margin-right: -0.55em;
+  color: var(--tx-1);
+  text-shadow: 0 0 1.5rem rgba(79, 216, 255, 0.55);
+  transition: opacity 0.8s var(--ease);
+}
+.boot--dormant .boot__title { opacity: 0.35; }
+.boot__sub { color: var(--tx-3); letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.6875rem; }
+.boot__prompt { min-height: 1.5rem; margin-top: 1.25rem; color: var(--tx-2); font-size: 0.9375rem; }
+.boot__prompt b { color: var(--acc); font-weight: 600; }
+.boot__listen {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.35rem;
+  border-radius: 50%;
+  background: var(--acc);
+  box-shadow: 0 0 0.6rem var(--acc);
+  animation: boot-listen 1.2s ease-in-out infinite;
+}
+@keyframes boot-listen { 50% { opacity: 0.3; } }
+
+/* The HUD assembles itself as the boot overlay leaves: outline, glass, then data. */
+@keyframes hud-assemble {
+  0% { opacity: 0; clip-path: inset(48% 0 48% 0); filter: brightness(2.6); }
+  45% { opacity: 1; clip-path: inset(0 0 0 0); filter: brightness(1.8); }
+  100% { opacity: 1; clip-path: inset(0 0 0 0); filter: none; }
+}
+.stage.is-live > .topbar { animation: hud-assemble 0.8s var(--ease) backwards; }
+.stage.is-live > .grid > .rail { animation: hud-assemble 0.9s var(--ease) 0.15s backwards; }
+.stage.is-live > .grid > .opstage { animation: hud-assemble 0.9s var(--ease) 0.3s backwards; }
+.stage.is-live > .grid > .tray { animation: hud-assemble 0.9s var(--ease) 0.45s backwards; }
+.stage.is-live > .grid > .ledger { animation: hud-assemble 0.9s var(--ease) 0.6s backwards; }
+.stage.is-live > .room { animation: hud-assemble 1s var(--ease) 0.2s backwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .boot--armed .boot__reactor,
+  .boot--igniting .boot__ring,
+  .boot__listen,
+  .stage.is-live > .topbar,
+  .stage.is-live > .grid > *,
+  .stage.is-live > .room { animation: none; }
+}

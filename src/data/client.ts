@@ -1,5 +1,5 @@
 // Prospect-specific identity. `{client}` is replaced with the prospect name from the setup screen / URL.
-import type { IntegrationId } from './integrations';
+import { integrations, type IntegrationId } from './integrations';
 import { pick, type PresetId } from './prospect';
 
 export const os = {
@@ -84,8 +84,13 @@ export const ambientLedger: AmbientEntry[] = pick<AmbientEntry[]>({
   ],
 });
 
+// Boot log: one line per connected tool for the preset, then context and signals.
 export const boot = {
-  lines: ['Linking Gmail', 'Linking Google Drive', 'Linking Notion', `Loading ${client.name} business context`, 'Signals detected · 3'],
+  lines: [
+    ...integrations.filter((i) => i.initialStatus === 'connected').map((i) => `Linking ${i.name}`),
+    `Loading ${client.name} context`,
+    'Signals detected · 3',
+  ],
 };
 
 // Inputs for the closing "What this means for {client}" screen.

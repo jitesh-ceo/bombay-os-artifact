@@ -227,6 +227,10 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'BOOT_DONE':
       return { ...state, bootDone: true };
 
+    // Replays the wake-up sequence (W). The work on the board stays as it was.
+    case 'REBOOT':
+      return { ...state, bootDone: false, ui: { ...state.ui, overlay: null, viewer: null, drawer: false } };
+
     case 'SELECT_SIGNAL': {
       if (action.id === state.run.signalId && state.run.status !== 'complete') return state;
       return { ...state, run: createRun(action.id), ui: { ...state.ui, viewer: null } };
