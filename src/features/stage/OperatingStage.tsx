@@ -12,7 +12,9 @@ import { firstUnapproved, useAppState, useDispatch } from '../../state/AppProvid
 import { effAutonomy } from '../../state/autonomy';
 import { OperationsMap } from '../map/OperationsMap';
 import { currentWorkflow } from '../../state/selectors';
+import { FORGE_WORKFLOW } from '../../jarvis/brain/forge';
 import { CompletePanel, DeliverPanel } from './DeliverPanel';
+import { ForgeStage } from './ForgeStage';
 import { ExecutePanel } from './ExecutePanel';
 import { BriefPanel, DecidePanel, UnderstandPanel } from './panels';
 import { SourceContext } from './SourceContext';
@@ -132,10 +134,15 @@ export function OperatingStage() {
   const { run } = state;
   const [focus, setFocus] = useState<IntegrationId | null>(null);
 
-  const panelKey =
-    run.status === 'idle' ? `brief-${run.signalId}` : run.status === 'complete' ? 'complete' : run.stage ?? 'starting';
+  // Content Forge keeps one holographic layout from the first fact to verification; DELIVER is shared.
+  const forging = run.workflowId === FORGE_WORKFLOW && run.status !== 'idle' && run.status !== 'complete' && run.stage !== 'deliver';
+
+  const panelKey = forging
+    ? 'forge'
+    : run.status === 'idle' ? `brief-${run.signalId}` : run.status === 'complete' ? 'complete' : run.stage ?? 'starting';
 
   const panel = (() => {
+    if (forging) return <ForgeStage />;
     if (run.status === 'idle') return <BriefPanel />;
     if (run.status === 'complete') return <CompletePanel />;
     switch (run.stage) {

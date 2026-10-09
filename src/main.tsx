@@ -20,6 +20,7 @@ import './styles/extras.css';
 import './styles/room.css';
 import './styles/hud.css';
 import './jarvis/ui/jarvis.css';
+import './styles/forge.css';
 import App from './App';
 
 createRoot(document.getElementById('root')!).render(

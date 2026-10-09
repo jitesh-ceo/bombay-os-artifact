@@ -139,3 +139,8 @@ export function getEvents(workflowId: string): WfEvent[] {
   }
   return e;
 }
+
+/** Drops a compiled timeline so the next read recompiles it (Content Forge swaps its workflow in place). */
+export function invalidate(workflowId: string) {
+  cache.delete(workflowId);
+}

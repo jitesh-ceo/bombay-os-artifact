@@ -31,6 +31,8 @@ export interface JarvisApi {
   health: JarvisHealth;
   /** True when the typed command box should show (no speech recognition, or the mic is blocked). */
   typing: boolean;
+  /** True only when the presenter opened the box on purpose. */
+  typingOpen: boolean;
   setTyping(on: boolean): void;
   /** Increments when the presenter asks to type (V without a microphone): focus the box then, not before. */
   typeRequest: number;
@@ -39,6 +41,8 @@ export interface JarvisApi {
   gestures: boolean;
   setGestures(on: boolean): void;
   forge(topic: string): void;
+  /** Opens the Content Forge topic prompt (F, or the command palette). */
+  openForge(): void;
   /** Hooks later features register: the wake sequence, Content Forge, the Forge topic prompt. */
   register(hooks: Partial<Hooks>): () => void;
 }
@@ -263,6 +267,8 @@ export function JarvisProvider({ children }: { children: ReactNode }) {
         speaker.cancel();
         startCapture(null);
       } else if (k === 'f') {
+        // Without this the F would land in the prompt's text box.
+        e.preventDefault();
         hooks.current.forgePrompt?.();
       } else if (k === 'g') {
         setGestures(!gesturesRef.current);
@@ -295,12 +301,14 @@ export function JarvisProvider({ children }: { children: ReactNode }) {
       levels: () => ({ mic: listener.level(), out: speaker.level() }),
       health,
       typing: typingOpen || micBlocked || !health.stt,
+      typingOpen,
       setTyping: setTypingOpen,
       typeRequest,
       openTyping,
       gestures,
       setGestures,
       forge,
+      openForge: () => hooks.current.forgePrompt?.(),
       register(h) {
         Object.assign(hooks.current, h);
         return () => {

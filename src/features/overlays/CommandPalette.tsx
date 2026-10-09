@@ -22,6 +22,7 @@ import { hasRoom } from '../../data/prospect';
 import { briefing, intents, signals } from '../../data/signals';
 import { TypeOn } from '../../motion/TypeOn';
 import { t } from '../../motion/transitions';
+import { useJarvis } from '../../jarvis/JarvisProvider';
 import { useAppState, useDispatch } from '../../state/AppProvider';
 import type { Action } from '../../state/types';
 
@@ -72,6 +73,7 @@ function Briefing({ onRunTop, onClose }: { onRunTop: (() => void) | null; onClos
 
 export function CommandPalette() {
   const state = useAppState();
+  const jarvis = useJarvis();
   const dispatch = useDispatch();
   const open = state.ui.overlay === 'palette';
   const [query, setQuery] = useState('');
@@ -109,6 +111,7 @@ export function CommandPalette() {
       ...(hasRoom()
         ? [{ id: 'room', group: 'Go to' as const, label: state.ui.room ? 'Open Execution' : 'Back to the Control Room', hint: 'C', icon: state.ui.room ? Workflow : LayoutDashboard, run: () => go({ type: 'ROOM', open: !state.ui.room }) }]
         : []),
+      { id: 'forge', group: 'Go to', label: 'Content Forge: make a video about…', hint: 'F', icon: Sparkles, run: () => { close(); jarvis.openForge(); } },
       { id: 'timelapse', group: 'Go to', label: 'Play the morning time-lapse', hint: 'T', icon: Sunrise, run: () => go({ type: 'TIMELAPSE_START', now: Date.now() }) },
       { id: 'roi', group: 'Go to', label: `What this means for ${client.name}`, hint: 'O', icon: TrendingUp, run: () => go({ type: 'OVERLAY', overlay: 'roi' }) },
       { id: 'tools', group: 'Go to', label: 'Connected tools', hint: 'I', icon: Plug, run: () => { close(); go({ type: 'DRAWER', open: true }); } },

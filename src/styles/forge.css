@@ -1,0 +1,143 @@
+/* ───────── Content Forge stage ───────── */
+.forge {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 15rem minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.6rem;
+}
+.forge__col { display: flex; flex-direction: column; gap: 0.6rem; min-height: 0; }
+.forge__col > .forge__holo { flex: 1; }
+.forge__strip { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) 14rem; gap: 0.6rem; }
+
+.forge__holo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-height: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--line-2);
+  background: var(--hud-corners), var(--hud-scan), rgba(6, 20, 34, 0.55);
+  opacity: 0.4;
+  transition: opacity 0.6s var(--ease), border-color 0.6s var(--ease), box-shadow 0.6s var(--ease);
+  overflow: hidden;
+}
+.forge__holo.is-on { opacity: 1; border-color: var(--hud-line); box-shadow: 0 0 1.2rem -0.6rem rgba(79, 216, 255, 0.6); }
+.forge__holo-head { display: flex; align-items: center; gap: 0.35rem; color: var(--acc); letter-spacing: 0.16em; text-transform: uppercase; }
+.forge__holo-body { min-height: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+
+.forge__trend { display: grid; grid-template-columns: minmax(0, 1fr) 4.5rem 1.4rem; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--tx-3); }
+.forge__trend.is-on { color: var(--tx-1); }
+.forge__trend-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.forge__bar { height: 0.3rem; background: var(--line-1); border-radius: 1px; overflow: hidden; }
+.forge__bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--acc), var(--gold)); box-shadow: 0 0 0.4rem var(--acc); }
+
+.forge__angle { font-family: var(--f-head); font-size: 0.95rem; line-height: 1.3; color: var(--tx-1); }
+.forge__chip { align-self: flex-start; padding: 0.15rem 0.45rem; border: 1px solid var(--acc-line); color: var(--acc); background: var(--acc-dim); }
+
+.forge__core { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.35rem; text-align: center; }
+.forge__orbit {
+  position: absolute;
+  inset: 0.5rem 0;
+  border-radius: 50%;
+  border: 1px dashed rgba(79, 216, 255, 0.22);
+  animation: reactor-spin 30s linear infinite;
+  pointer-events: none;
+}
+.forge__core .reactor { pointer-events: none; }
+.forge__topic { font-family: var(--f-head); font-size: 1.05rem; font-weight: 700; color: var(--tx-1); line-height: 1.15; max-width: 14rem; }
+.forge__stage { color: var(--acc); letter-spacing: 0.16em; text-transform: uppercase; }
+
+.forge__issue {
+  position: absolute;
+  bottom: 0;
+  left: -0.5rem;
+  right: -0.5rem;
+  z-index: 2;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--bad-line);
+  background: rgba(40, 6, 10, 0.92);
+  box-shadow: 0 0 1.4rem -0.4rem rgba(255, 77, 77, 0.6);
+  text-align: left;
+}
+.forge__issue.is-fixed { border-color: var(--ok-line); background: rgba(4, 30, 26, 0.92); box-shadow: 0 0 1.4rem -0.4rem rgba(94, 240, 196, 0.5); }
+.forge__issue-head { display: flex; align-items: center; gap: 0.35rem; color: var(--bad); text-transform: uppercase; letter-spacing: 0.14em; }
+.forge__issue.is-fixed .forge__issue-head { color: var(--ok); }
+.forge__issue-line { font-size: 0.75rem; color: var(--tx-2); margin-top: 0.2rem; }
+.forge__issue-line s { color: var(--bad); }
+.forge__issue-line b { color: var(--ok); font-weight: 600; }
+.forge__issue-why { font-size: 0.6875rem; color: var(--tx-3); margin-top: 0.2rem; line-height: 1.35; }
+
+.forge__thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+.forge__thumb {
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: end start;
+  padding: 0.3rem;
+  border: 1px solid var(--line-2);
+  opacity: 0.25;
+  transform: scale(0.94);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+.forge__thumb span { font-family: var(--f-hud); font-size: 0.5rem; font-weight: 700; line-height: 1.15; color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8); }
+.forge__thumb.is-on { opacity: 1; transform: none; }
+.forge__thumb--0 { background: radial-gradient(circle at 70% 30%, rgba(255, 181, 71, 0.85), transparent 55%), linear-gradient(135deg, #0b2a44, #04101c); }
+.forge__thumb--1 { background: radial-gradient(circle at 30% 40%, rgba(79, 216, 255, 0.8), transparent 55%), linear-gradient(135deg, #1a0b2e, #04101c); }
+.forge__thumb--2 { background: radial-gradient(circle at 60% 60%, rgba(255, 77, 77, 0.8), transparent 55%), linear-gradient(135deg, #2a0b14, #04101c); }
+
+.forge__cap { font-size: 0.75rem; line-height: 1.35; color: var(--tx-1); }
+.forge__cap--ar { font-family: 'Tajawal', var(--f-sans); text-align: right; }
+.forge__tags { color: var(--acc); }
+
+.forge__script { min-width: 0; }
+.forge__hook { font-family: var(--f-head); font-size: 0.95rem; color: var(--tx-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.forge__beats { display: flex; gap: 0.3rem; }
+.forge__beats span {
+  display: grid;
+  place-items: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  border: 1px solid var(--line-2);
+  font-family: var(--f-mono);
+  font-size: 0.5625rem;
+  color: var(--tx-4);
+  transition: all 0.4s var(--ease);
+}
+.forge__beats span.is-on { border-color: var(--acc); color: var(--acc); background: var(--acc-dim); box-shadow: 0 0 0.4rem rgba(79, 216, 255, 0.4); }
+.forge__meta { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.75rem; color: var(--tx-3); }
+.forge__meta b { color: var(--tx-1); font-weight: 600; }
+
+/* Topic prompt (F) */
+.forgeask { position: absolute; inset: 0; z-index: 58; display: grid; place-items: start center; padding-top: 7rem; }
+.forgeask__backdrop { position: absolute; inset: 0; background: rgba(2, 6, 12, 0.78); backdrop-filter: blur(4px); }
+.forgeask__box {
+  position: relative;
+  width: 36rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.4rem 1.6rem;
+  border: 1px solid var(--hud-line);
+  background: var(--hud-corners), var(--hud-scan), var(--hud-fill), var(--bg-1);
+  box-shadow: var(--shadow-lift);
+}
+.forgeask__eyebrow { display: flex; align-items: center; gap: 0.35rem; letter-spacing: 0.18em; text-transform: uppercase; }
+.forgeask__label { font-family: var(--f-head); font-size: 1.5rem; font-weight: 600; color: var(--tx-1); }
+.forgeask__box input {
+  height: 2.75rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--acc-line);
+  background: rgba(2, 10, 18, 0.9);
+  color: var(--tx-1);
+  font-size: 1rem;
+  outline: none;
+}
+.forgeask__box input:focus { box-shadow: 0 0 0 3px var(--acc-dim), var(--glow-1); }
+.forgeask__ideas { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.forgeask__ideas button { padding: 0.3rem 0.6rem; border: 1px solid var(--line-3); color: var(--tx-2); font-size: 0.75rem; }
+.forgeask__ideas button:hover { border-color: var(--acc); color: var(--acc); }
+
+@media (prefers-reduced-motion: reduce) {
+  .forge__orbit { animation: none; }
+}

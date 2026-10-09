@@ -2,6 +2,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Keyboard, Mic } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useAppState } from '../../state/AppProvider';
 import { useJarvis } from '../JarvisProvider';
 import { sentences } from './sentences';
 
@@ -43,6 +44,10 @@ function useFading(text: string, hold: boolean) {
 
 export function Subtitles() {
   const j = useJarvis();
+  const { ui } = useAppState();
+  // A fallback box stays out of the way of open documents and overlays unless it was asked for.
+  const covered = Boolean(ui.viewer || ui.overlay || ui.drawer);
+  const showBox = j.typingOpen || (j.typing && !covered);
   const spoken = useSpokenLine(j.spoken, j.mode === 'speaking');
   const heard = useFading(j.heard, j.mode === 'listening');
   const [value, setValue] = useState('');
@@ -79,7 +84,7 @@ export function Subtitles() {
           </motion.div>
         )}
       </AnimatePresence>
-      {j.typing && (
+      {showBox && (
         <form
           className="subs__type"
           onSubmit={(e) => {
