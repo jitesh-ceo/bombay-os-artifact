@@ -81,9 +81,8 @@ export function personalize<T>(value: T): T {
   return value;
 }
 
-// Creator content falls back to studio until every module has its own creator entry.
-export function pick<T>(byPreset: Omit<Record<PresetId, T>, 'creator'> & { creator?: T }): T {
-  return personalize(byPreset[prospect.preset] ?? byPreset.studio);
+export function pick<T>(byPreset: Record<PresetId, T>): T {
+  return personalize(byPreset[prospect.preset]);
 }
 
 // The Control Room exists for the creator presets only.

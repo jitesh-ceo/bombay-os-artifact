@@ -1,4 +1,4 @@
-import { pick } from './prospect';
+import { pick, type PresetId } from './prospect';
 
 export type NewsTier = 'T1' | 'T2' | 'T3';
 
@@ -22,7 +22,77 @@ export interface NewsFeed {
 }
 
 // Five stories, newest first. Anything older than 48 hours is already gone.
-export const newsFeed: NewsFeed = pick<NewsFeed>({
+export const newsByPreset: Record<PresetId, NewsFeed> = {
+  creator: {
+    items: [
+      {
+        id: 'cr-permit',
+        tier: 'T1',
+        scope: 'UAE',
+        headline: 'UAE Media Council reminds creators: paid and gifted posts need the advertiser permit',
+        source: 'The National',
+        ageHours: 3,
+        deck: 'Gifted items count. A post that features one without disclosure can be fined.',
+        body: 'The National reports the UAE Media Council has restated that any post promoting a product, paid or gifted, needs the advertiser permit and a clear disclosure. Accounts flagged this month were mostly lifestyle creators tagging gifted fashion.',
+        why: 'Anything that shows the Atlas jacket needs #gifted before it goes live.',
+      },
+      {
+        id: 'cr-shorts',
+        tier: 'T1',
+        scope: 'UAE',
+        headline: 'YouTube Shorts views in the Gulf up 40% year on year',
+        source: 'Campaign ME',
+        ageHours: 8,
+        deck: 'Short vertical video is now the fastest-growing format on YouTube in the region.',
+        body: 'Campaign Middle East says Shorts views from the UAE and Saudi Arabia rose 40% on last year, and Shorts that cross-post a viral Reel within 24 hours do best. Long-form channels that add Shorts see subscriber growth first.',
+        why: 'Cross-post the Metro reel tonight while it is still climbing.',
+      },
+      {
+        id: 'cr-reels',
+        tier: 'T1',
+        scope: 'UAE',
+        headline: 'Instagram now ranks Reels on saves and shares over likes',
+        source: 'Reuters',
+        ageHours: 15,
+        deck: 'A Reel people save travels further than one people only like.',
+        body: 'Reuters reports Instagram has confirmed saves and sends now weigh more than likes in Reels ranking. Creators with high save rates are seeing second-day spikes. Answering the top question in a pinned comment keeps a Reel in circulation.',
+        why: 'Saves on the Metro reel are up 6×. Pin the answer people are asking for.',
+      },
+      {
+        id: 'cr-ksa',
+        tier: 'T2',
+        scope: 'GCC',
+        headline: 'Saudi beauty brands double creator budgets for Q4',
+        source: 'Gulf News',
+        ageHours: 21,
+        deck: 'Kept because the UAE scrape was short. Most of these brands also book Dubai creators.',
+        body: 'Gulf News cites agency data showing Saudi beauty brands doubling creator spend for the fourth quarter, with a preference for creators whose audiences span the UAE and KSA. Rates are holding, not falling.',
+        why: 'Hold the rate on the Lumière deal. Demand for this audience is rising.',
+      },
+      {
+        id: 'cr-eu',
+        tier: 'T3',
+        scope: 'World · UAE',
+        headline: 'EU influencer rules start to cover Dubai creators selling to Europe',
+        source: 'Reuters',
+        ageHours: 33,
+        deck: 'Tier three. It stays because some of the audience is in Europe.',
+        body: 'Reuters notes the EU disclosure rule reaches anyone paid to promote a product to EU buyers, even if they film in Dubai. Creators with European affiliate links are being asked for contracts.',
+        why: 'Keep disclosure on affiliate posts consistent across every platform.',
+      },
+    ],
+    incoming: {
+      id: 'cr-fresh',
+      tier: 'T1',
+      scope: 'UAE',
+      headline: 'Trending audio this morning: “5 AM in the city” sound passes 90K Reels',
+      source: 'Instagram trends',
+      ageHours: 1,
+      deck: 'The sound behind the viral Metro reel is trending across the Gulf.',
+      body: 'Instagram’s trend board shows the sound used in the Metro reel crossing 90,000 Reels overnight, most of them from Dubai and Riyadh. Part 2 on the same sound would ride the trend while it lasts.',
+      why: 'Use the same audio for Part 2 tomorrow.',
+    },
+  },
   studio: {
     items: [
       {
@@ -163,4 +233,6 @@ export const newsFeed: NewsFeed = pick<NewsFeed>({
       why: 'Check it against the open briefs before the first call. It may already fit one of them.',
     },
   },
-});
+};
+
+export const newsFeed: NewsFeed = pick(newsByPreset);

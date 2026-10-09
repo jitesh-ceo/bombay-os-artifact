@@ -1,5 +1,6 @@
 import type { IntegrationId } from './integrations';
-import { pick } from './prospect';
+import { creatorWorkflows } from './creator/workflows';
+import { pick, type PresetId } from './prospect';
 
 export type StageId = 'understand' | 'decide' | 'execute' | 'verify' | 'deliver';
 
@@ -674,7 +675,9 @@ const studio: Record<string, Workflow> = {
   },
 };
 
-export const workflows: Record<string, Workflow> = pick({ studio, realestate });
+export const workflowsByPreset: Record<PresetId, Record<string, Workflow>> = { creator: creatorWorkflows, studio, realestate };
+
+export const workflows: Record<string, Workflow> = pick(workflowsByPreset);
 
 export const workflowForSignal = (signalId: string) =>
   Object.values(workflows).find((w) => w.signalId === signalId)!;

@@ -1,8 +1,11 @@
-import { Activity, Boxes, Briefcase, CalendarDays, Cloud, Hash, MessageCircle, Orbit, PenTool, ShoppingBag, SquareKanban, Target } from 'lucide-react';
+import { Activity, Boxes, Briefcase, CalendarDays, Cloud, Hash, MessageCircle, Orbit, PenTool, Scissors, ShoppingBag, SquareKanban, Target } from 'lucide-react';
+import { useId } from 'react';
 import type { IntegrationId } from '../data/integrations';
 
 // Simplified, recognisable marks. Not official logos; enough for a non-technical audience to read instantly.
 function Glyph({ id }: { id: IntegrationId }) {
+  // Unique per instance: the same mark can appear many times on one screen.
+  const grad = `ig${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   switch (id) {
     case 'gmail':
       return (
@@ -60,6 +63,38 @@ function Glyph({ id }: { id: IntegrationId }) {
       return <SquareKanban color="#3cba73" strokeWidth={1.8} />;
     case 'zoho':
       return <Boxes color="#f0b43c" strokeWidth={1.8} />;
+    case 'youtube':
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden>
+          <rect x="2.5" y="5.5" width="19" height="13" rx="3.6" fill="#FF0033" />
+          <path d="M10 9.2v5.6l4.8-2.8L10 9.2z" fill="#fff" />
+        </svg>
+      );
+    case 'instagram':
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden>
+          <defs>
+            <linearGradient id={grad} x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stopColor="#FEDA75" />
+              <stop offset="0.45" stopColor="#D62976" />
+              <stop offset="1" stopColor="#4F5BD5" />
+            </linearGradient>
+          </defs>
+          <rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke={`url(#${grad})`} strokeWidth="2" />
+          <circle cx="12" cy="12" r="3.8" fill="none" stroke={`url(#${grad})`} strokeWidth="2" />
+          <circle cx="16.9" cy="7.1" r="1.1" fill="#D62976" />
+        </svg>
+      );
+    case 'tiktok':
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden>
+          <path d="M13.5 4v10.2a2.8 2.8 0 1 1-2.8-2.8" fill="none" stroke="#25F4EE" strokeWidth="2.2" strokeLinecap="round" transform="translate(-0.6 0.6)" />
+          <path d="M13.5 4v10.2a2.8 2.8 0 1 1-2.8-2.8" fill="none" stroke="#FE2C55" strokeWidth="2.2" strokeLinecap="round" transform="translate(0.6 -0.6)" />
+          <path d="M13.5 4v10.2a2.8 2.8 0 1 1-2.8-2.8M13.5 4c.4 2.4 2 3.9 4.5 4.1" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      );
+    case 'capcut':
+      return <Scissors color="#e8f7ff" strokeWidth={1.8} />;
   }
 }
 

@@ -1,4 +1,4 @@
-import { pick } from './prospect';
+import { pick, type PresetId } from './prospect';
 
 export type IntegrationId =
   | 'gmail'
@@ -17,7 +17,11 @@ export type IntegrationId =
   | 'whatsapp'
   | 'salesforce'
   | 'sheets'
-  | 'zoho';
+  | 'zoho'
+  | 'youtube'
+  | 'instagram'
+  | 'tiktok'
+  | 'capcut';
 
 export type IntegrationStatus = 'connected' | 'available' | 'accessRequired' | 'pending' | 'connecting';
 
@@ -160,9 +164,54 @@ const catalogue: Record<IntegrationId, CatalogueEntry> = {
     description: 'Invoices, receipts and collections.',
     capabilities: ['Track retainer payments', 'Flag overdue invoices', 'Prepare payment reminders'],
   },
+  youtube: {
+    id: 'youtube',
+    name: 'YouTube Studio',
+    category: 'Channel',
+    description: 'Channel analytics, audience, Shorts and scheduled uploads.',
+    capabilities: ['Read views, retention and audience', 'Benchmark Shorts and long-form', 'Schedule uploads for approval'],
+    stats: '412K subscribers · 640 videos indexed · synced 2m ago',
+  },
+  instagram: {
+    id: 'instagram',
+    name: 'Instagram',
+    category: 'Channel',
+    description: 'Reels insights, comments, DMs and drafts.',
+    capabilities: ['Read Reel insights and comments', 'Draft captions and pinned comments', 'Spot viral moments early'],
+    stats: '318K followers · 1,240 posts indexed · synced 1m ago',
+  },
+  tiktok: {
+    id: 'tiktok',
+    name: 'TikTok',
+    category: 'Channel',
+    description: 'Video analytics, trending sounds and comments.',
+    capabilities: ['Read video analytics', 'Track trending sounds in your niche', 'Draft captions for approval'],
+    accessOwner: 'Account owner',
+  },
+  capcut: {
+    id: 'capcut',
+    name: 'CapCut',
+    category: 'Editing',
+    description: 'Edit projects, templates and export queues.',
+    capabilities: ['Read edit status', 'Prepare Shorts re-cuts', 'Hand projects to the editor'],
+  },
 };
 
 const lineup = pick<[IntegrationId, IntegrationStatus][]>({
+  creator: [
+    ['gmail', 'connected'],
+    ['youtube', 'connected'],
+    ['instagram', 'connected'],
+    ['drive', 'connected'],
+    ['notion', 'connected'],
+    ['tiktok', 'accessRequired'],
+    ['calendar', 'accessRequired'],
+    ['capcut', 'available'],
+    ['figma', 'available'],
+    ['slack', 'available'],
+    ['shopify', 'available'],
+    ['whatsapp', 'available'],
+  ],
   studio: [
     ['gmail', 'connected'],
     ['drive', 'connected'],
@@ -207,7 +256,17 @@ export interface RestrictedResource {
   capabilities: string[];
 }
 
-export const restrictedResources: Record<string, RestrictedResource> = pick({
+export const restrictedByPreset: Record<PresetId, Record<string, RestrictedResource>> = {
+  creator: {
+    'drive-rates': {
+      id: 'drive-rates',
+      integrationId: 'drive' as IntegrationId,
+      path: 'Shared / Management / Brand Rates 2026',
+      owner: 'Sara Mansour',
+      reason: 'The rate card and past deal terms live in management’s restricted folder.',
+      capabilities: ['Read the 2026 rate card', 'Compare past deal terms', 'Verify quoted figures'],
+    },
+  },
   studio: {
     'drive-finance': {
       id: 'drive-finance',
@@ -228,4 +287,6 @@ export const restrictedResources: Record<string, RestrictedResource> = pick({
       capabilities: ['Read unit-level prices', 'Apply current offers and waivers', 'Verify quoted figures'],
     },
   },
-});
+};
+
+export const restrictedResources: Record<string, RestrictedResource> = pick(restrictedByPreset);

@@ -1,5 +1,6 @@
 // Prospect-specific identity. `{client}` is replaced with the prospect name from the setup screen / URL.
-import { pick } from './prospect';
+import type { IntegrationId } from './integrations';
+import { pick, type PresetId } from './prospect';
 
 export const os = {
   name: 'JARVIS',
@@ -9,13 +10,30 @@ export const os = {
   presenterRole: 'CEO, Bombay Media',
 };
 
-export const client = pick({
+interface ClientIdentity {
+  name: string;
+  initials: string;
+  descriptor: string;
+  approver: string;
+  approverRole: string;
+  hq: { city: string; lon: number; lat: number };
+}
+
+export const clientByPreset: Record<PresetId, ClientIdentity> = {
+  creator: {
+    name: '{client}',
+    initials: '{initials}',
+    descriptor: 'Lifestyle & tech creator · Dubai',
+    approver: 'Sara Mansour',
+    approverRole: 'Manager',
+    hq: { city: 'Dubai', lon: 55.27, lat: 25.2 },
+  },
   studio: {
     name: '{client}',
     initials: '{initials}',
-    descriptor: 'Digital marketing & technology · Dubai',
+    descriptor: 'Creator-led content studio · Dubai',
     approver: 'Meera Kapoor',
-    approverRole: 'Client Services Director',
+    approverRole: 'Creative Director',
     hq: { city: 'Dubai', lon: 55.27, lat: 25.2 },
   },
   realestate: {
@@ -26,10 +44,13 @@ export const client = pick({
     approverRole: 'Head of Sales',
     hq: { city: 'Mumbai', lon: 72.82, lat: 19.0 },
   },
-});
+};
+
+export const client = pick(clientByPreset);
 
 // Figures shown in the impact meter before any workflow runs.
 export const impactBaseline = pick({
+  creator: { hoursSaved: 6.5, pipelineLakhs: 22, tasksCompleted: 17 },
   studio: { hoursSaved: 11.5, pipelineLakhs: 186, tasksCompleted: 29 },
   realestate: { hoursSaved: 14.5, pipelineLakhs: 4280, tasksCompleted: 37 },
 });
@@ -37,12 +58,18 @@ export const impactBaseline = pick({
 export type AmbientEntry = {
   minutesAgo: number;
   text: string;
-  source?: 'gmail' | 'drive' | 'notion';
+  source?: IntegrationId;
   tone?: 'default' | 'accent' | 'ok' | 'flag';
 };
 
 // Ledger entries that make the system feel alive before the demo starts.
 export const ambientLedger: AmbientEntry[] = pick<AmbientEntry[]>({
+  creator: [
+    { minutesAgo: 196, text: 'Overnight DMs and comments triaged · 63 items, 3 need you', source: 'instagram' },
+    { minutesAgo: 152, text: 'Channel stats synced · +12,400 followers overnight', source: 'youtube', tone: 'ok' },
+    { minutesAgo: 90, text: 'Viral spike detected · Metro reel at 4× pace', source: 'instagram', tone: 'flag' },
+    { minutesAgo: 34, text: 'Brand deal received · Lumière Skin', source: 'gmail', tone: 'accent' },
+  ],
   studio: [
     { minutesAgo: 192, text: 'Overnight inbox triaged · 57 emails, 4 need action', source: 'gmail' },
     { minutesAgo: 150, text: 'Ad spend synced · 12 client accounts', source: 'drive', tone: 'ok' },
@@ -63,6 +90,21 @@ export const boot = {
 
 // Inputs for the closing "What this means for {client}" screen.
 export const roi = pick({
+  creator: {
+    teamSize: 4,
+    teamMin: 1,
+    teamMax: 20,
+    teamLabel: 'People on your team: editing, management, design',
+    hoursPerPersonWeek: 12,
+    automationShare: 0.55,
+    hourlyCost: 2075,
+    responseBefore: '9h 40m',
+    responseAfter: '< 3 min',
+    sameDayBefore: 22,
+    sameDayAfter: 100,
+    sameDayLabel: 'Brand deals answered the same day',
+    pilot: 'A 2-week pilot on the tools you already use: Gmail, YouTube Studio, Instagram and Notion. One workflow live in week one.',
+  },
   studio: {
     teamSize: 24,
     teamMin: 5,

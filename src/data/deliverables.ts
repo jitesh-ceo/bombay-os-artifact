@@ -1,5 +1,6 @@
 import type { IntegrationId } from './integrations';
-import { pick } from './prospect';
+import { creatorDeliverables } from './creator/deliverables';
+import { pick, type PresetId } from './prospect';
 
 // `{{token}}` in any string is replaced by the verified (or pre-verification) value
 // from the workflow's `corrections`.
@@ -522,7 +523,7 @@ const studio: Record<string, Deliverable> = {
           ref: 2,
         },
         { t: 'p', text: 'Would Thursday at 11:00 work for a discovery call? Our D2C team is free from 1 November, in time for your launch.' },
-        { t: 'p', text: 'Warm regards,\nMeera Kapoor\nClient Services Director, {client}' },
+        { t: 'p', text: 'Warm regards,\nMeera Kapoor\nCreative Director, {client}' },
       ],
     },
     refs: [
@@ -779,4 +780,6 @@ const studio: Record<string, Deliverable> = {
   },
 };
 
-export const deliverables: Record<string, Deliverable> = pick({ studio, realestate });
+export const deliverablesByPreset: Record<PresetId, Record<string, Deliverable>> = { creator: creatorDeliverables, studio, realestate };
+
+export const deliverables: Record<string, Deliverable> = pick(deliverablesByPreset);

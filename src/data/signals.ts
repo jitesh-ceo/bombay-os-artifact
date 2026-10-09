@@ -1,5 +1,5 @@
 import type { IntegrationId } from './integrations';
-import { pick } from './prospect';
+import { pick, type PresetId } from './prospect';
 
 export interface Signal {
   id: string;
@@ -42,7 +42,89 @@ interface Pack {
   morning: { label: string; lines: [string, string][] };
 }
 
-const pack = pick<Pack>({
+export const packsByPreset: Record<PresetId, Pack> = {
+  creator: {
+    signals: [
+      {
+        id: 'sig-deal',
+        index: '01',
+        kind: 'Brand deal',
+        headline: 'Lumière Skin · $18K offer',
+        time: '6:12 AM',
+        source: 'gmail',
+        urgency: 'High',
+        workflowId: 'wf-deal',
+        from: 'Ananya Rao',
+        fromRole: 'Founder, Lumière Skin · Abu Dhabi',
+        excerpt:
+          'We would love {client} to front our vitamin C launch in November: one YouTube integration, two Reels and a TikTok. We are offering $18,000 and expect around 2.1M views. Could you confirm this week?',
+        value: '$18K offer',
+        place: { city: 'Abu Dhabi', lon: 54.37, lat: 24.45 },
+      },
+      {
+        id: 'sig-viral',
+        index: '02',
+        kind: 'Viral spike',
+        headline: 'Reel at 4× normal pace',
+        time: '5:40 AM',
+        source: 'instagram',
+        urgency: 'Alert',
+        workflowId: 'wf-viral',
+        from: 'Instagram Insights',
+        fromRole: 'Reel · “Dubai Metro at 5 AM” · posted 19h ago',
+        excerpt:
+          'The reel has 2.3M views in 19 hours, four times the usual pace. Saves are up 6× and 1,900 comments ask where the jacket is from. The jacket was gifted by Atlas Outerwear.',
+        value: '2.3M views · 19h',
+        place: { city: 'Dubai Marina', lon: 55.14, lat: 25.08 },
+      },
+      {
+        id: 'sig-weekly',
+        index: '03',
+        kind: 'Weekly upload pack',
+        headline: '5 uploads · due Monday 09:00',
+        time: 'Scheduled',
+        source: 'notion',
+        urgency: 'Scheduled',
+        workflowId: 'wf-weekly',
+        from: 'Content calendar',
+        fromRole: 'Recurring every Monday',
+        excerpt:
+          'This week: a YouTube review, three Reels and a Sunday vlog. Captions in English and Arabic, a posting schedule and tasks for Omar and Dev. Usually takes Sara half a day.',
+        place: { city: 'Sharjah', lon: 55.39, lat: 25.36 },
+      },
+    ],
+    accounts: [
+      { name: 'Atlas Outerwear', city: 'Dubai Design District', lon: 55.3, lat: 25.19, detail: 'Gifting partner · healthy' },
+      { name: 'Kinetic Fitness', city: 'Abu Dhabi', lon: 54.39, lat: 24.49, detail: 'Ambassador · renewing in Dec' },
+      { name: 'Coastline Resorts', city: 'Fujairah', lon: 56.34, lat: 25.13, detail: 'Hotel stay · vlog due Sun' },
+      { name: 'Velo EV', city: 'Ras Al Khaimah', lon: 55.94, lat: 25.79, detail: 'Launch review · healthy' },
+      { name: 'Handloom Co.', city: 'Ajman', lon: 55.51, lat: 25.41, detail: 'Affiliate · healthy' },
+      { name: 'Saffron Air', city: 'Al Ain', lon: 55.76, lat: 24.21, detail: 'Travel partner · healthy' },
+      { name: 'Tealeaf Finance', city: 'Dubai Marina', lon: 55.13, lat: 25.07, detail: 'Sponsored series · healthy' },
+      { name: 'Mountain Crate', city: 'Khor Fakkan', lon: 56.35, lat: 25.34, detail: 'Affiliate · healthy' },
+    ],
+    intents: [
+      { id: 'attention', label: 'What needs my attention?', hint: 'Composed briefing across all channels', action: { type: 'briefing' } },
+      { id: 'deal', label: 'Answer the Lumière Skin brand deal', hint: 'Pitch deck, counter-offer, content plan', action: { type: 'run', signalId: 'sig-deal' } },
+      { id: 'viral', label: 'Ride the viral reel', hint: 'Pinned comment, Shorts cross-post, Part 2 brief', action: { type: 'run', signalId: 'sig-viral' } },
+      { id: 'weekly', label: "Build this week's upload pack", hint: 'Calendar, captions EN / AR, team tasks', action: { type: 'run', signalId: 'sig-weekly' } },
+    ],
+    briefing: [
+      'Good morning. Three things need you before 09:00.',
+      '01  Lumière Skin offered $18,000 for a November launch. A counter-offer can be ready in about 40 seconds.',
+      '02  Your Metro reel is running at four times its usual pace. 1,900 people are asking about the jacket.',
+      '03  This week’s upload pack is due at 09:00: five uploads, captions in English and Arabic.',
+      'Overnight you gained 12,400 followers. I triaged 63 DMs and comments and found nothing else urgent.',
+    ],
+    morning: {
+      label: 'Before 9:00 AM',
+      lines: [
+        ['06:12', 'Lumière Skin deal → pitch deck, counter-offer, content plan'],
+        ['06:31', 'Viral reel → pinned comment, Shorts cross-post, Part 2 brief'],
+        ['08:47', 'Upload pack → 5 uploads, captions EN / AR, team tasks'],
+      ],
+    },
+  },
   studio: {
     signals: [
       {
@@ -211,7 +293,9 @@ const pack = pick<Pack>({
       ],
     },
   },
-});
+};
+
+const pack = pick(packsByPreset);
 
 export const signals = pack.signals;
 export const accounts = pack.accounts;
