@@ -161,7 +161,7 @@ export function CommandPalette() {
                       setActive(0);
                     }}
                     onKeyDown={onKeyDown}
-                    placeholder="What should Bombay OS do?"
+                    placeholder="What should JARVIS do?"
                     aria-label="Command"
                   />
                   <Kbd>Esc</Kbd>
@@ -197,7 +197,7 @@ export function CommandPalette() {
                       </div>
                     );
                   })}
-                  {!filtered.length && <div className="pal__empty t-3">No matching command. Bombay OS runs defined workflows, not free-form chat.</div>}
+                  {!filtered.length && <div className="pal__empty t-3">No matching command. JARVIS runs defined workflows, not free-form chat.</div>}
                 </div>
                 <div className="pal__foot mono-sm t-4">
                   <span>

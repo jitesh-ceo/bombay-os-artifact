@@ -1,10 +1,10 @@
 import type { AppState, Autonomy } from './types';
 
 export const AUTONOMY: { id: Autonomy; label: string; line: string }[] = [
-  { id: 'suggest', label: 'Suggest', line: 'Bombay OS plans; a person approves before any work starts.' },
-  { id: 'draft', label: 'Draft', line: 'Bombay OS drafts everything; each deliverable is approved one by one.' },
-  { id: 'approve', label: 'Approve', line: 'Bombay OS does the work; one approval sends everything.' },
-  { id: 'autopilot', label: 'Autopilot', line: 'Bombay OS delivers verified work automatically, within policy.' },
+  { id: 'suggest', label: 'Suggest', line: 'JARVIS plans; a person approves before any work starts.' },
+  { id: 'draft', label: 'Draft', line: 'JARVIS drafts everything; each deliverable is approved one by one.' },
+  { id: 'approve', label: 'Approve', line: 'JARVIS does the work; one approval sends everything.' },
+  { id: 'autopilot', label: 'Autopilot', line: 'JARVIS delivers verified work automatically, within policy.' },
 ];
 
 export const autonomyLabel = (a: Autonomy) => AUTONOMY.find((x) => x.id === a)!.label;

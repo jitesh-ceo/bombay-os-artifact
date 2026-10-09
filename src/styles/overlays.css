@@ -1,7 +1,7 @@
 /* ───────── Deliverable viewer ───────── */
 
 .viewer { position: absolute; inset: 0; z-index: 40; }
-.viewer__backdrop { position: absolute; inset: 0; background: rgba(8, 7, 6, 0.8); backdrop-filter: blur(4px); }
+.viewer__backdrop { position: absolute; inset: 0; background: rgba(2, 6, 12, 0.8); backdrop-filter: blur(4px); }
 .viewer__frame {
   position: absolute;
   inset: 1.5rem 3rem;
@@ -118,7 +118,7 @@
   gap: 0.6rem;
   padding-bottom: 1rem;
   margin-bottom: 1.75rem;
-  border-bottom: 1px solid rgba(29, 27, 24, 0.14);
+  border-bottom: 1px solid rgba(79, 216, 255, 0.14);
 }
 .doc__mark {
   display: grid;
@@ -139,8 +139,8 @@
   gap: 0.75rem 1.25rem;
   padding: 0.9rem 0;
   margin-bottom: 1.75rem;
-  border-top: 1px solid rgba(29, 27, 24, 0.14);
-  border-bottom: 1px solid rgba(29, 27, 24, 0.14);
+  border-top: 1px solid rgba(79, 216, 255, 0.14);
+  border-bottom: 1px solid rgba(79, 216, 255, 0.14);
 }
 .doc__meta > div { display: flex; flex-direction: column; gap: 0.15rem; }
 .doc__meta span:first-child { font-family: var(--f-mono); font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
@@ -162,17 +162,17 @@
   font-family: var(--f-mono);
   font-size: 0.5625rem;
   letter-spacing: 0.1em;
-  color: #b87412;
+  color: #4fd8ff;
 }
 .doc--email .doc__h::before, .doc--record .doc__h::before, .doc--plan .doc__h::before { display: none; }
 .doc__lead { font-size: 1rem; line-height: 1.55; color: var(--ink); }
 .doc__p { margin-bottom: 0.8rem; color: var(--ink); white-space: pre-line; }
 .doc__list { padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.35rem; }
-.doc__list li::marker { color: #b87412; }
+.doc__list li::marker { color: #4fd8ff; }
 .doc__ref {
   font-family: var(--f-mono);
   font-size: 0.5rem;
-  color: #b87412;
+  color: #4fd8ff;
   margin-left: 0.2rem;
   font-weight: 600;
 }
@@ -187,9 +187,9 @@
   color: var(--ink-3);
   font-weight: 500;
   padding: 0 0 0.4rem;
-  border-bottom: 1px solid rgba(29, 27, 24, 0.25);
+  border-bottom: 1px solid rgba(79, 216, 255, 0.25);
 }
-.doc__table td { padding: 0.5rem 0; border-bottom: 1px solid rgba(29, 27, 24, 0.1); }
+.doc__table td { padding: 0.5rem 0; border-bottom: 1px solid rgba(79, 216, 255, 0.1); }
 .doc__table td:last-child, .doc__table th:last-child { text-align: right; }
 .doc__table tfoot td { border-bottom: none; border-top: 1.5px solid var(--ink); padding-top: 0.7rem; font-weight: 650; font-size: 0.9375rem; }
 .doc__margin {
@@ -199,18 +199,18 @@
   margin-top: 0.5rem;
   padding: 0.2rem 0.5rem;
   border-radius: 0.2rem;
-  background: rgba(88, 145, 99, 0.12);
+  background: rgba(94, 240, 196, 0.12);
   color: #3d6b47;
   font-family: var(--f-mono);
   font-size: 0.5625rem;
   letter-spacing: 0.06em;
 }
 .doc__kv { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem; }
-.doc__kv > div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid rgba(29, 27, 24, 0.1); }
+.doc__kv > div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid rgba(79, 216, 255, 0.1); }
 .doc__kv span:first-child, .doc__steps span:first-child { color: var(--ink-2); }
 .doc__kv span:last-child { font-weight: 560; text-align: right; }
 .doc__steps { display: flex; flex-direction: column; }
-.doc__steps > div { display: grid; grid-template-columns: 8.5rem 1fr; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid rgba(29, 27, 24, 0.1); }
+.doc__steps > div { display: grid; grid-template-columns: 8.5rem 1fr; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid rgba(79, 216, 255, 0.1); }
 .doc__steps span:first-child { font-family: var(--f-mono); font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; padding-top: 0.15rem; }
 .doc__sources {
   display: flex;
@@ -218,17 +218,17 @@
   gap: 0.2rem;
   margin-top: 2.25rem;
   padding-top: 0.9rem;
-  border-top: 1px solid rgba(29, 27, 24, 0.14);
+  border-top: 1px solid rgba(79, 216, 255, 0.14);
   font-size: 0.6875rem;
   color: var(--ink-3);
 }
 .doc__sources > span:first-child { font-family: var(--f-mono); font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.2rem; }
-.doc__sources sup { color: #b87412; font-family: var(--f-mono); font-weight: 600; }
+.doc__sources sup { color: #4fd8ff; font-family: var(--f-mono); font-weight: 600; }
 
 /* ───────── Integrations drawer ───────── */
 
 .drawer-layer { position: absolute; inset: 0; z-index: 50; }
-.drawer-layer__backdrop { position: absolute; inset: 0; background: rgba(8, 7, 6, 0.6); }
+.drawer-layer__backdrop { position: absolute; inset: 0; background: rgba(2, 6, 12, 0.6); }
 .drawer {
   position: absolute;
   top: 0;
@@ -325,17 +325,17 @@
   padding: 0.9rem 1rem;
   border: 1px solid var(--line-3);
   border-radius: var(--r-3);
-  background: rgba(17, 16, 14, 0.96);
+  background: rgba(6, 14, 24, 0.96);
   box-shadow: var(--shadow-lift);
 }
 .hud__row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
 .hud__seg { display: flex; border: 1px solid var(--line-2); border-radius: 0.3rem; overflow: hidden; }
 .hud__seg button { padding: 0.2rem 0.55rem; font-family: var(--f-mono); font-size: 0.625rem; color: var(--tx-3); }
-.hud__seg button.is-on { background: var(--acc); color: #1a1206; }
+.hud__seg button.is-on { background: var(--acc); color: #021622; }
 .hud__toggle { position: relative; width: 1.9rem; height: 1.05rem; border-radius: 999px; background: var(--bg-4); transition: background 0.2s; }
 .hud__toggle span { position: absolute; top: 0.15rem; left: 0.15rem; width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--tx-2); transition: transform 0.2s var(--ease); }
 .hud__toggle.is-on { background: var(--acc); }
-.hud__toggle.is-on span { transform: translateX(0.85rem); background: #1a1206; }
+.hud__toggle.is-on span { transform: translateX(0.85rem); background: #021622; }
 .hud__keys { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; padding-top: 0.6rem; border-top: 1px solid var(--line-1); }
 
 /* ───────── Boot ───────── */

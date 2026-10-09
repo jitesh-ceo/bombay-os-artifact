@@ -41,6 +41,7 @@ export function TopBar() {
       <div className="topbar__id">
         <BrandMark />
         <span className="topbar__os">{os.name}</span>
+        <span className="topbar__maker">by {os.maker}</span>
         <span className="topbar__sep" />
         <span className="topbar__client-mark">{client.initials}</span>
         <div className="topbar__client">

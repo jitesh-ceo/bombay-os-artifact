@@ -332,7 +332,7 @@ const realestate: Record<string, Deliverable> = {
       title: 'A strong week for Tower B',
       meta: [
         ['Period', '21–27 September 2026'],
-        ['Prepared by', 'Bombay OS'],
+        ['Prepared by', 'JARVIS'],
       ],
       blocks: [
         {
@@ -707,7 +707,7 @@ const studio: Record<string, Deliverable> = {
       meta: [
         ['Period', '21–27 September 2026'],
         ['Accounts', '12'],
-        ['Prepared by', 'Bombay OS'],
+        ['Prepared by', 'JARVIS'],
       ],
       blocks: [
         {

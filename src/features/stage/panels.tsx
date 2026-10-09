@@ -47,7 +47,7 @@ export function BriefPanel() {
       </motion.div>
 
       <motion.div className="brief__plan" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...t.base, delay: 0.08 }}>
-        <div className="mono-sm t-3">Bombay OS will</div>
+        <div className="mono-sm t-3">JARVIS will</div>
         <p className="brief__goal">{wf.brief.goal}</p>
 
         <div className="brief__row">
@@ -79,7 +79,7 @@ export function BriefPanel() {
         <div className="brief__cta">
           <button className="btn btn--primary btn--lg" onClick={() => dispatch({ type: 'START', now: Date.now() })}>
             <Play size={14} fill="currentColor" />
-            Run with Bombay OS
+            Run with JARVIS
           </button>
           <div className="brief__estimate">
             <span className="t-1">{wf.brief.estimate}</span>

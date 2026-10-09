@@ -65,8 +65,8 @@ function MapCanvas() {
       <svg viewBox={`0 0 ${VIEW.w} ${VIEW.h}`} className="omap__svg" aria-label="Live operations map of the UAE">
         <defs>
           <radialGradient id="omap-hq-glow">
-            <stop offset="0%" stopColor="rgba(242,169,59,0.28)" />
-            <stop offset="100%" stopColor="rgba(242,169,59,0)" />
+            <stop offset="0%" stopColor="rgba(79, 216, 255,0.28)" />
+            <stop offset="100%" stopColor="rgba(79, 216, 255,0)" />
           </radialGradient>
         </defs>
 
@@ -92,7 +92,7 @@ function MapCanvas() {
 
         <g className="omap__sweep" style={{ transformOrigin: `${HQ.x}px ${HQ.y}px`, animationDuration: `${PERIOD}s` }}>
           {SLICES.map((s, i) => (
-            <path key={i} d={s.d} fill={`rgba(242,169,59,${s.o.toFixed(3)})`} />
+            <path key={i} d={s.d} fill={`rgba(79, 216, 255,${s.o.toFixed(3)})`} />
           ))}
           <line x1={HQ.x} y1={HQ.y} x2={HQ.x} y2={HQ.y - 175} className="omap__beam" />
         </g>

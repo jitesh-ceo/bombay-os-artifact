@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { NewsStream } from './NewsStream';
 import { ArrowUpRight, CalendarClock, Check, FileText, ListChecks, Mail, Presentation, Sparkles, UserCheck } from 'lucide-react';
+import { HudDial } from '../../components/primitives';
 import { client } from '../../data/client';
 import { deliverables, type DeliverableKind } from '../../data/deliverables';
 import { CountUp } from '../../motion/CountUp';
@@ -138,7 +139,7 @@ export function OutputTray() {
 
       <div className="impact">
         <div className="impact__head">
-          <span className="mono t-3">Impact today</span>
+          <span className="mono t-3"><HudDial /> Impact today</span>
           <span className="mono-sm t-4">{client.name}</span>
         </div>
         <div className="impact__grid">

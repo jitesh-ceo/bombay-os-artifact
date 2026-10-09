@@ -156,7 +156,7 @@ const en = {
   neverPrice: 'Offers the free growth audit. Never a fee.',
   stamped: 'Stamped',
 
-  aiTitle: 'Bombay OS · on board',
+  aiTitle: 'JARVIS · on board',
   aiPlaceholder: 'Ask about the board, or tell it what to do…',
   aiSees: 'Sees the whole board. Cannot post, schedule or email.',
   qPost: 'What should we post today?',
@@ -351,7 +351,7 @@ const ar: Record<Key, string> = {
   neverPrice: 'نعرض تدقيق النمو المجاني. وبدون ذكر أي رسوم.',
   stamped: 'تم التسجيل',
 
-  aiTitle: 'Bombay OS · على اللوحة',
+  aiTitle: 'JARVIS · على اللوحة',
   aiPlaceholder: 'اسأل عن اللوحة أو قول له شو يسوي…',
   aiSees: 'يشوف اللوحة كلها. ما يقدر ينشر أو يجدول أو يرسل إيميل.',
   qPost: 'شو ننشر اليوم؟',

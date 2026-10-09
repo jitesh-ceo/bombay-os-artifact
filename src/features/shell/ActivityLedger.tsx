@@ -21,8 +21,8 @@ export function ActivityLedger() {
               key={e.id}
               layout="position"
               className={`ledger__row ledger__row--${e.tone ?? 'default'}`}
-              initial={{ opacity: 0, x: -8, backgroundColor: 'rgba(242,169,59,0.08)' }}
-              animate={{ opacity: 1, x: 0, backgroundColor: 'rgba(242,169,59,0)' }}
+              initial={{ opacity: 0, x: -8, backgroundColor: 'rgba(79, 216, 255,0.08)' }}
+              animate={{ opacity: 1, x: 0, backgroundColor: 'rgba(79, 216, 255,0)' }}
               exit={{ opacity: 0 }}
               transition={{ ...t.base, backgroundColor: { duration: 1.6 } }}
             >

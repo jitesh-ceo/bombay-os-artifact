@@ -397,12 +397,12 @@ export function Radar() {
                 <stop offset="1" stopColor="#0d1a1c" />
               </linearGradient>
               <radialGradient id="rm-sweep" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform={`scale(${rings[2].r})`}>
-                <stop offset="0" stopColor="rgba(242,169,59,0.28)" />
-                <stop offset="1" stopColor="rgba(242,169,59,0)" />
+                <stop offset="0" stopColor="rgba(79, 216, 255,0.28)" />
+                <stop offset="1" stopColor="rgba(79, 216, 255,0)" />
               </radialGradient>
               <pattern id="rm-blocks" width="24" height="24" patternUnits="userSpaceOnUse">
                 <rect width="24" height="24" fill="none" />
-                <circle cx="12" cy="12" r="1" fill="rgba(244,236,224,0.05)" />
+                <circle cx="12" cy="12" r="1" fill="rgba(214, 240, 255,0.05)" />
               </pattern>
             </defs>
             <rect x={-2000} y={-2000} width={W + 4000} height={H + 4000} className="rm-map__land" />

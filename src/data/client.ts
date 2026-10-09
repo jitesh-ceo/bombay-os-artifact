@@ -2,8 +2,8 @@
 import { pick } from './prospect';
 
 export const os = {
-  name: 'Bombay OS',
-  maker: 'Bombay Media',
+  name: 'JARVIS',
+  maker: 'Northstar Studio',
   version: 'v1.0',
   presenter: 'Farhan Rakhangi',
   presenterRole: 'CEO, Bombay Media',

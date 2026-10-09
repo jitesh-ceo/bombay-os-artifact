@@ -108,8 +108,8 @@ function Gauge({ value, masked }: { value: number; masked: boolean }) {
   return (
     <div className="rm-gauge">
       <svg viewBox="0 0 200 200">
-        {ticks.map((tk, i) => (
-          <line key={i} {...tk} className={tk.long ? 'rm-gauge__tick is-long' : 'rm-gauge__tick'} />
+        {ticks.map(({ long, ...pos }, i) => (
+          <line key={i} {...pos} className={long ? 'rm-gauge__tick is-long' : 'rm-gauge__tick'} />
         ))}
         <circle cx="100" cy="100" r={r} className="rm-gauge__track" strokeDasharray={`${len} 999`} transform="rotate(135 100 100)" />
         {!masked && (

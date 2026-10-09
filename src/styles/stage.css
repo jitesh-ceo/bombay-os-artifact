@@ -10,7 +10,7 @@
   border: 1px solid var(--line-2);
   border-radius: var(--r-3);
   background:
-    radial-gradient(circle at 1px 1px, rgba(244, 236, 224, 0.035) 1px, transparent 0) 0 0 / 1.25rem 1.25rem,
+    radial-gradient(circle at 1px 1px, rgba(214, 240, 255, 0.035) 1px, transparent 0) 0 0 / 1.25rem 1.25rem,
     var(--bg-1);
   transition: border-color 0.5s var(--ease);
 }
@@ -80,7 +80,7 @@
 
 .ctx__wires { display: block; width: 100%; height: 1.25rem; overflow: visible; }
 .wire { fill: none; stroke: var(--line-2); stroke-width: 1; transition: stroke 0.4s; }
-.wire--done { stroke: rgba(156, 199, 164, 0.35); }
+.wire--done { stroke: rgba(94, 240, 196, 0.35); }
 .wire--reading { stroke: var(--acc-line); }
 .wire--blocked { stroke: var(--bad-line); stroke-dasharray: 3 3; }
 .wire-flow {
@@ -322,7 +322,7 @@
   padding: 0.6rem 1rem 0.6rem 0.7rem;
   border: 1px solid var(--bad-line);
   border-radius: var(--r-2);
-  background: linear-gradient(90deg, var(--bad-dim), rgba(239, 91, 76, 0.03));
+  background: linear-gradient(90deg, var(--bad-dim), rgba(255, 77, 77, 0.03));
   overflow: hidden;
   flex: none;
 }
@@ -396,7 +396,7 @@
   background: var(--bg-2);
   transition: border-color 0.4s, box-shadow 0.4s;
 }
-.compare--flag { border-color: var(--bad); box-shadow: 0 0 0 3px rgba(239, 91, 76, 0.08); }
+.compare--flag { border-color: var(--bad); box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.08); }
 .compare--fixed { border-color: var(--ok-line); }
 .compare__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
 .compare__field { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; }

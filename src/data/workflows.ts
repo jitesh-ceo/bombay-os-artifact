@@ -8,7 +8,7 @@ export const STAGES: { id: StageId; label: string; title: string; explain: strin
     id: 'understand',
     label: 'Understand',
     title: 'Understand',
-    explain: 'Bombay OS is gathering the information required to make a decision.',
+    explain: 'JARVIS is gathering the information required to make a decision.',
   },
   {
     id: 'decide',
@@ -99,7 +99,7 @@ export interface Workflow {
   impact: { hours: number; pipelineLakhs: number; tasks: number };
   approvalLedger: { text: string; source?: IntegrationId }[];
   completion: string[];
-  // The same job done by hand, in minutes. Drives the "Without Bombay OS" race.
+  // The same job done by hand, in minutes. Drives the "Without JARVIS" race.
   manual: [string, number][];
 }
 
@@ -209,7 +209,7 @@ const realestate: Record<string, Workflow> = {
       resourceId: 'drive-finance',
       laneId: 'proposal',
       afterLaneEvent: 5,
-      need: 'Bombay OS needs the shared pricing folder to price Unit B-2601.',
+      need: 'JARVIS needs the shared pricing folder to price Unit B-2601.',
     },
     checks: [
       { id: 'c-identity', label: 'Client name and requirements', against: 'Gmail / Original enquiry', source: 'gmail' },
@@ -493,7 +493,7 @@ const studio: Record<string, Workflow> = {
       resourceId: 'drive-finance',
       laneId: 'proposal',
       afterLaneEvent: 5,
-      need: 'Bombay OS needs the finance folder to price the retainer and media fees.',
+      need: 'JARVIS needs the finance folder to price the retainer and media fees.',
     },
     checks: [
       { id: 'c-identity', label: 'Client name and brief', against: 'Gmail / Original brief', source: 'gmail' },
@@ -507,7 +507,7 @@ const studio: Record<string, Workflow> = {
           generated: '4.2×',
           verified: '3.1×',
           reason:
-            'The draft promised 4.2× ROAS. The closest case study, Glow & Co, delivered 3.1× in 90 days. Bombay OS never promises more than the evidence supports.',
+            'The draft promised 4.2× ROAS. The closest case study, Glow & Co, delivered 3.1× in 90 days. JARVIS never promises more than the evidence supports.',
           token: 'roas',
           lineLabel: 'Expected ROAS',
           ledger: {

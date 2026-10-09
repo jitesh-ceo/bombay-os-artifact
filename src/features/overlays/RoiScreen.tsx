@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Clock3, Users, X } from 'lucide-react';
 import { useState } from 'react';
-import { BrandMark } from '../../components/primitives';
+import { BrandMark, HudDial } from '../../components/primitives';
 import { client, impactBaseline, os, roi } from '../../data/client';
 import { usesUsd } from '../../data/prospect';
 import { signals } from '../../data/signals';
@@ -51,7 +51,7 @@ function RoiInner() {
         </button>
 
         <div className="roi__main">
-          <div className="mono-sm t-acc">Projected impact · monthly</div>
+          <div className="mono-sm t-acc"><HudDial /> Projected impact · monthly</div>
           <h2 className="display roi__title">
             What this means for <em>{client.name}</em>
           </h2>
@@ -124,7 +124,7 @@ function RoiInner() {
             <Clock3 size={12} />
             {handledCount > 0
               ? `Seen in this session: ${handledCount} signal${handledCount === 1 ? '' : 's'} handled end to end, ${demoHours.toFixed(1)} hours returned.`
-              : `Assumes ${roi.hoursPerPersonWeek}h of repeatable work per person per week, ${Math.round(roi.automationShare * 100)}% handled by Bombay OS.`}
+              : `Assumes ${roi.hoursPerPersonWeek}h of repeatable work per person per week, ${Math.round(roi.automationShare * 100)}% handled by JARVIS.`}
           </div>
         </div>
 

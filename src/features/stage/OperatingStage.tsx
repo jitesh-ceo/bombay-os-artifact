@@ -36,20 +36,20 @@ function Header() {
   const open = signals.filter((s) => !state.handled[s.id]).length;
   let eyebrow = `Signal ${sig.index} · ${sig.kind}`;
   let title = 'Ready to act';
-  let explain = 'A new signal has arrived. Bombay OS has everything it needs to handle it.';
+  let explain = 'A new signal has arrived. JARVIS has everything it needs to handle it.';
   if (onMap) {
     eyebrow = `Live operations · ${client.name}`;
     title = 'Monitoring';
     explain = open
       ? `Every inbox, account and file your team relies on, watched continuously. ${open} signal${open === 1 ? '' : 's'} need action.`
-      : 'Every signal this morning has been handled. Bombay OS keeps watching.';
+      : 'Every signal this morning has been handled. JARVIS keeps watching.';
   } else if (run.status === 'complete') {
     title = 'Delivered';
     explain = 'Approved work has been sent through the tools your team already uses.';
   } else if (stage) {
     eyebrow = `Stage ${String(idx + 1).padStart(2, '0')} / 05 · ${wf.runLabel}`;
     title = stage.title;
-    explain = run.status === 'blocked' ? 'Paused safely. Bombay OS will not guess without the right source.' : stage.explain;
+    explain = run.status === 'blocked' ? 'Paused safely. JARVIS will not guess without the right source.' : stage.explain;
   }
 
   return (

@@ -43,7 +43,7 @@ export function ManualRace() {
   return (
     <div className={`race ${finished ? 'race--done' : ''} ${run.status === 'idle' ? 'race--idle' : ''}`}>
       <span className="race__label mono-sm">
-        <Hourglass size={11} /> Without Bombay OS
+        <Hourglass size={11} /> Without JARVIS
       </span>
       <div className="race__bar">
         {wf.manual.map(([name, min], i) => {
@@ -63,7 +63,7 @@ export function ManualRace() {
           </>
         ) : finished ? (
           <>
-            <span className="t-ok">Bombay OS done in {fmtDuration((run.finishedAt! - run.startedAt - run.blockedMs) * speed)}</span>
+            <span className="t-ok">JARVIS done in {fmtDuration((run.finishedAt! - run.startedAt - run.blockedMs) * speed)}</span>
             <span className="t-4"> · </span>
             <span className="t-2">
               Manual still on step {stepIdx + 1} of {wf.manual.length}

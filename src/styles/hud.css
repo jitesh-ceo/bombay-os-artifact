@@ -1,0 +1,175 @@
+/* ───────── JARVIS HUD layer ─────────
+   Loaded last. Turns the existing panels into holographic glass without touching their layout:
+   corner brackets and scanlines are extra background layers, never extra boxes. */
+
+:root {
+  --hud-c: 0.8rem;
+  --hud-corners:
+    linear-gradient(var(--acc), var(--acc)) top left / var(--hud-c) 1px no-repeat,
+    linear-gradient(var(--acc), var(--acc)) top left / 1px var(--hud-c) no-repeat,
+    linear-gradient(var(--acc), var(--acc)) top right / var(--hud-c) 1px no-repeat,
+    linear-gradient(var(--acc), var(--acc)) top right / 1px var(--hud-c) no-repeat,
+    linear-gradient(var(--acc), var(--acc)) bottom left / var(--hud-c) 1px no-repeat,
+    linear-gradient(var(--acc), var(--acc)) bottom left / 1px var(--hud-c) no-repeat,
+    linear-gradient(var(--acc), var(--acc)) bottom right / var(--hud-c) 1px no-repeat,
+    linear-gradient(var(--acc), var(--acc)) bottom right / 1px var(--hud-c) no-repeat;
+  --hud-scan: repeating-linear-gradient(0deg, rgba(79, 216, 255, 0.022) 0 1px, transparent 1px 3px);
+}
+
+/* The whole canvas: deep space, faint grid, vignette. */
+.stage {
+  background:
+    radial-gradient(70rem 40rem at 50% 45%, rgba(20, 70, 110, 0.18), transparent 70%),
+    linear-gradient(rgba(79, 216, 255, 0.035) 1px, transparent 1px) 0 0 / 2.5rem 2.5rem,
+    linear-gradient(90deg, rgba(79, 216, 255, 0.035) 1px, transparent 1px) 0 0 / 2.5rem 2.5rem,
+    var(--bg-0);
+}
+.stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  background:
+    var(--hud-scan),
+    radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.45) 100%);
+  mix-blend-mode: screen;
+}
+
+/* Glass panels */
+.ledger,
+.opstage,
+.rm-panel,
+.rm-card,
+.morning__card,
+.viewer__frame,
+.drawer,
+.roi__frame,
+.setup__box,
+.pal__box {
+  border-color: var(--hud-line);
+  background: var(--hud-corners), var(--hud-scan), var(--hud-fill);
+  backdrop-filter: blur(6px);
+  box-shadow: inset 0 0 2.5rem -1.5rem rgba(79, 216, 255, 0.35), 0 0 1.5rem -1.2rem rgba(79, 216, 255, 0.4);
+}
+.opstage {
+  background:
+    var(--hud-corners),
+    var(--hud-scan),
+    radial-gradient(circle at 1px 1px, rgba(214, 240, 255, 0.04) 1px, transparent 0) 0 0 / 1.25rem 1.25rem,
+    var(--hud-fill);
+}
+.opstage--blocked { border-color: var(--bad-line); }
+.rm-panel.is-masked { border-color: var(--bad-line); }
+.rm-layer--bad .rm-card { border-color: var(--bad-line); }
+
+/* Bare columns get a single glowing edge instead of a box, so their widths are unchanged. */
+.rail { box-shadow: inset -1px 0 0 var(--line-2); padding-right: 0.25rem; }
+.tray { box-shadow: inset 1px 0 0 var(--line-2); padding-left: 0.25rem; }
+
+.topbar {
+  background: linear-gradient(180deg, rgba(10, 30, 48, 0.65), rgba(3, 7, 13, 0));
+  border-bottom-color: var(--hud-line);
+  box-shadow: 0 1px 0 rgba(79, 216, 255, 0.08), 0 0.5rem 1.5rem -1rem rgba(79, 216, 255, 0.35);
+}
+.topbar__os {
+  font-family: var(--f-hud);
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  color: var(--acc);
+  text-shadow: var(--glow-1);
+}
+.topbar__maker { font-family: var(--f-head); font-size: 0.6875rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--tx-3); }
+
+/* Headings and labels in the HUD face */
+.display { font-weight: 600; letter-spacing: 0.01em; }
+.rm-panel__title,
+.rail__head,
+.tray__head,
+.ledger__head { font-family: var(--f-head); letter-spacing: 0.08em; text-transform: uppercase; }
+.rm-panel__title { font-weight: 700; }
+.rm-panel__title::before { box-shadow: var(--glow-1); }
+
+/* Accent elements glow */
+.btn--primary { box-shadow: var(--glow-1); }
+.btn--primary:hover { box-shadow: var(--glow-2); }
+.pill--accent,
+.t-acc { text-shadow: 0 0 0.6rem rgba(79, 216, 255, 0.35); }
+.corner { filter: drop-shadow(0 0 0.25rem var(--acc)); }
+.impact__value { text-shadow: 0 0 1rem rgba(79, 216, 255, 0.25); }
+
+/* Mount flicker for anything opting in */
+@keyframes hud-flicker {
+  0% { opacity: 0; filter: brightness(2.2); }
+  12% { opacity: 0.9; }
+  18% { opacity: 0.35; }
+  30% { opacity: 1; filter: brightness(1.4); }
+  100% { opacity: 1; filter: none; }
+}
+.hud-flicker,
+.rm-panel,
+.ledger,
+.opstage { animation: hud-flicker 0.6s var(--ease) both; }
+
+/* Decorative rotating rings around key figures */
+@keyframes hud-spin { to { transform: rotate(360deg); } }
+.hud-rings { position: relative; isolation: isolate; }
+.hud-rings::before,
+.hud-rings::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -0.6rem;
+  border-radius: 50%;
+  border: 1px dashed rgba(79, 216, 255, 0.28);
+  pointer-events: none;
+  animation: hud-spin 24s linear infinite;
+}
+.hud-rings::after {
+  inset: -1.1rem;
+  border: 1px solid transparent;
+  border-top-color: rgba(79, 216, 255, 0.5);
+  border-bottom-color: rgba(255, 181, 71, 0.4);
+  animation-duration: 9s;
+  animation-direction: reverse;
+}
+
+/* Small rotating dial beside key figures */
+.hud-dial { display: inline-block; width: 1.1rem; height: 1.1rem; vertical-align: middle; color: var(--acc); filter: drop-shadow(0 0 0.2rem rgba(79, 216, 255, 0.6)); }
+.hud-dial__outer { transform-origin: 12px 12px; animation: hud-spin 8s linear infinite; }
+.hud-dial__inner { transform-origin: 12px 12px; animation: hud-spin 3s linear infinite reverse; }
+
+/* Stark gold for alert-grade signals and access requests */
+.pill--gold { color: var(--gold); border-color: var(--gold-line); background: var(--gold-dim); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-flicker,
+  .rm-panel,
+  .ledger,
+  .opstage { animation: none; }
+  .hud-rings::before,
+  .hud-rings::after,
+  .hud-dial__outer,
+  .hud-dial__inner { animation: none; }
+}
+
+/* ───────── Holographic operations map ───────── */
+.omap__stage {
+  border-color: var(--hud-line);
+  background:
+    var(--hud-corners),
+    linear-gradient(rgba(79, 216, 255, 0.06) 1px, transparent 1px) 0 0 / 1.6rem 1.6rem,
+    linear-gradient(90deg, rgba(79, 216, 255, 0.06) 1px, transparent 1px) 0 0 / 1.6rem 1.6rem,
+    radial-gradient(ellipse at 50% 55%, rgba(30, 110, 160, 0.22), transparent 65%),
+    var(--bg-0);
+}
+.omap__dots circle { fill: rgba(79, 216, 255, 0.5); filter: drop-shadow(0 0 0.6px rgba(79, 216, 255, 0.9)); }
+.omap__ring circle { stroke: rgba(79, 216, 255, 0.22); }
+.omap__axis { stroke: rgba(79, 216, 255, 0.16); }
+.omap__arc--idle { stroke: rgba(79, 216, 255, 0.22); }
+.omap__beam { filter: drop-shadow(0 0 2px var(--acc)); }
+.omap__target { stroke: var(--gold); }
+.omap__halo { stroke: rgba(79, 216, 255, 0.55); }
+
+/* Deliverables as holographic sheets */
+.doc { border: 1px solid var(--hud-line); box-shadow: 0 0 2.5rem -1rem rgba(79, 216, 255, 0.35), inset 0 0 3rem -2rem rgba(79, 216, 255, 0.4); }

@@ -69,13 +69,14 @@ export function SourceContext({ focus, onFocus }: Props) {
             <g key={id}>
               <motion.path
                 d={d}
+                initial={false}
                 animate={{ d }}
                 transition={{ duration: 0.9, ease: easeInOut }}
                 className={`wire wire--${st}`}
                 vectorEffect="non-scaling-stroke"
               />
               {st === 'reading' && (
-                <motion.path d={d} animate={{ d }} className="wire-flow" vectorEffect="non-scaling-stroke" />
+                <motion.path d={d} initial={false} animate={{ d }} className="wire-flow" vectorEffect="non-scaling-stroke" />
               )}
             </g>
           );

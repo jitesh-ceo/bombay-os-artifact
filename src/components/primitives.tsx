@@ -19,13 +19,25 @@ export function Spinner() {
   return <span className="spinner" aria-hidden />;
 }
 
+// Decorative HUD dial: a ticked outer ring and a counter-rotating arc.
+export function HudDial() {
+  return (
+    <svg className="hud-dial" viewBox="0 0 24 24" aria-hidden>
+      <circle className="hud-dial__outer" cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" strokeWidth="1.2" strokeDasharray="1.2 2.2" />
+      <path className="hud-dial__inner" d="M12 5.5a6.5 6.5 0 0 1 6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="2" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function BrandMark({ size = 1.375 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 22 22" style={{ width: `${size}rem`, height: `${size}rem` }} aria-hidden>
-      <rect x="0.5" y="0.5" width="21" height="21" rx="5" fill="none" stroke="rgba(244,236,224,.2)" />
-      <rect x="5" y="5.5" width="12" height="2.2" rx="1.1" fill="var(--acc)" />
-      <rect x="5" y="9.9" width="8" height="2.2" rx="1.1" fill="var(--tx-1)" />
-      <rect x="5" y="14.3" width="12" height="2.2" rx="1.1" fill="var(--tx-1)" />
+    // A miniature arc reactor: outer ring, ten coil segments, glowing core.
+    <svg viewBox="0 0 22 22" style={{ width: `${size}rem`, height: `${size}rem`, filter: 'drop-shadow(0 0 0.2rem rgba(79,216,255,.6))' }} aria-hidden>
+      <circle cx="11" cy="11" r="10" fill="none" stroke="var(--acc)" strokeOpacity="0.55" strokeWidth="0.8" />
+      <circle cx="11" cy="11" r="7.2" fill="none" stroke="var(--acc)" strokeWidth="2.2" strokeDasharray="3.4 1.12" />
+      <circle cx="11" cy="11" r="3.4" fill="var(--acc-2)" />
+      <circle cx="11" cy="11" r="1.6" fill="#fff" />
     </svg>
   );
 }
