@@ -5,3 +5,4 @@ dist
 .superpowers
 .env
 .env.local
+public/mediapipe

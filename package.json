@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json && vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "mediapipe": "node scripts/fetch-mediapipe.mjs",
+    "postinstall": "node scripts/fetch-mediapipe.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter-tight": "^5.3.0",
@@ -15,6 +17,7 @@
     "@fontsource/orbitron": "^5.3.0",
     "@fontsource/rajdhani": "^5.3.0",
     "@fontsource/tajawal": "^5.3.0",
+    "@mediapipe/tasks-vision": "^1.1.0",
     "framer-motion": "^13.4.4",
     "lucide-react": "^1.48.0",
     "react": "^19.3.0",

@@ -14,6 +14,7 @@ import { TopBar } from './features/shell/TopBar';
 import { SignalRail } from './features/signals/SignalRail';
 import { OperatingStage } from './features/stage/OperatingStage';
 import { ForgeController } from './jarvis/ForgeController';
+import { GestureController } from './jarvis/GestureController';
 import { JarvisProvider } from './jarvis/JarvisProvider';
 import { Subtitles } from './jarvis/ui/Subtitles';
 import { AppProvider, useAppState } from './state/AppProvider';
@@ -42,6 +43,7 @@ function Shell() {
         </LayoutGroup>
       )}
       <ForgeController />
+      <GestureController />
       <Subtitles />
       <BootSequence />
     </div>

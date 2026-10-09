@@ -3,6 +3,7 @@ import {
   ArrowRight,
   Command,
   CornerDownLeft,
+  Hand,
   LayoutDashboard,
   Map as MapIcon,
   Play,
@@ -111,6 +112,7 @@ export function CommandPalette() {
       ...(hasRoom()
         ? [{ id: 'room', group: 'Go to' as const, label: state.ui.room ? 'Open Execution' : 'Back to the Control Room', hint: 'C', icon: state.ui.room ? Workflow : LayoutDashboard, run: () => go({ type: 'ROOM', open: !state.ui.room }) }]
         : []),
+      { id: 'gestures', group: 'Go to', label: jarvis.gestures ? 'Turn hand gestures off' : 'Turn hand gestures on', hint: 'G', icon: Hand, run: () => { close(); jarvis.setGestures(!jarvis.gestures); } },
       { id: 'forge', group: 'Go to', label: 'Content Forge: make a video about…', hint: 'F', icon: Sparkles, run: () => { close(); jarvis.openForge(); } },
       { id: 'timelapse', group: 'Go to', label: 'Play the morning time-lapse', hint: 'T', icon: Sunrise, run: () => go({ type: 'TIMELAPSE_START', now: Date.now() }) },
       { id: 'roi', group: 'Go to', label: `What this means for ${client.name}`, hint: 'O', icon: TrendingUp, run: () => go({ type: 'OVERLAY', overlay: 'roi' }) },

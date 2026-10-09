@@ -7,5 +7,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
     plugins: [react(), apiProxy(env)],
+    // Pre-bundle the lazily loaded hand tracker, so the dev server never reloads the page
+    // the first time gestures are switched on.
+    optimizeDeps: { include: ['@mediapipe/tasks-vision'] },
   };
 });
