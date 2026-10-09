@@ -24,13 +24,15 @@ export type JarvisIntent =
   | { kind: 'mute'; on: boolean }
   | { kind: 'lang'; lang: 'en' | 'ar' };
 
-/** Lower-case, strip Arabic diacritics and accents, collapse spaces. */
+/** Lower-case, strip Arabic diacritics and accents, collapse spaces, rejoin spelled-out letters. */
 export const norm = (s: string) =>
   s
     .toLowerCase()
     .normalize('NFKD')
     .replace(/[ً-ٟ̀-ͯ]/g, '')
     .replace(/[’']/g, "'")
+    // Speech recognition often spells acronyms out: "R O I", "r.o.i." → "roi".
+    .replace(/\b[a-z](?:[.\s]+[a-z]\b)+\.?/g, (m) => m.replace(/[^a-z]/g, ''))
     .replace(/\s+/g, ' ')
     .trim();
 
@@ -100,7 +102,10 @@ export function matchIntent(text: string): JarvisIntent | null {
   const idx = isQuestion ? -1 : words.findIndex((w) => has(q, w));
   if (idx >= 0) return { kind: 'run', signalIndex: idx as 0 | 1 | 2 };
 
-  if (has(q, ['roi', 'return on investment', 'what this means', 'the value', 'العائد'])) return { kind: 'overlay', overlay: 'roi' };
+  // "Roy" is how Chrome often hears a spoken "ROI".
+  if (has(q, ['roi', 'roy', 'return on investment', 'what this means', 'the value', 'results', 'the numbers', 'savings', 'العائد'])) {
+    return { kind: 'overlay', overlay: 'roi' };
+  }
   if (has(q, ['set up', 'setup', 'prospect', 'الإعداد'])) return { kind: 'overlay', overlay: 'setup' };
   if (has(q, ['command palette', 'commands', 'الأوامر'])) return { kind: 'overlay', overlay: 'palette' };
   if (has(q, ['time lapse', 'time-lapse', 'timelapse', 'fast forward'])) return { kind: 'timelapse' };

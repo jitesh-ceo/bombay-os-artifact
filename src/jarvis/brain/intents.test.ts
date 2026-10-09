@@ -27,6 +27,12 @@ describe('matchIntent', () => {
     expect(matchIntent('play the morning time-lapse')).toEqual({ kind: 'timelapse' });
   });
 
+  it('opens the results however speech recognition spells ROI', () => {
+    for (const heard of ['show me the R O I', 'show me the R.O.I.', 'show me the r. o. i.', 'show me the Roy', 'show me the results', 'show me the numbers', 'show me the savings', 'what is the return on investment']) {
+      expect(matchIntent(heard), heard).toEqual({ kind: 'overlay', overlay: 'roi' });
+    }
+  });
+
   it('understands control phrases', () => {
     expect(matchIntent('switch to autopilot')).toEqual({ kind: 'autonomy', level: 'autopilot' });
     expect(matchIntent('next')).toEqual({ kind: 'advance' });
