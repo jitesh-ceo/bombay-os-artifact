@@ -1,6 +1,7 @@
 // The on-board assistant. It reads the live board snapshot, follows the studio's rules, and acts
 // through the same tools the real drawer exposes. It never posts, schedules or emails.
-import { ACCOUNTS, PLACES, STUDIO } from './seed';
+import { prospect } from '../../data/prospect';
+import { ACCOUNTS, COPY, PLACES, STUDIO } from './seed';
 import type { Room, ToolCall } from './store';
 import { dubaiDate, dubaiParts, fmtMin, runsToday } from './time';
 import type { OutreachStatus, PlaceId, Story } from './types';
@@ -10,7 +11,7 @@ export interface AgentReply {
   tools: ToolCall[];
 }
 
-const PLAN: Record<string, { en: string; ar: string }> = {
+const STUDIO_PLAN: Record<string, { en: string; ar: string }> = {
   mon: { en: 'Monday: a client result post, with numbers from the live wall and the source named.', ar: 'الإثنين: منشور نتيجة لعميل، بأرقام من الحائط المباشر ومع ذكر المصدر.' },
   tue: { en: 'Tuesday: the case study goes out on LinkedIn at 10:00. It is already scheduled.', ar: 'الثلاثاء: دراسة الحالة تنزل على لينكدإن الساعة 10، وهي مجدولة.' },
   wed: { en: 'Wednesday: a platform-update explainer in Arabic, 30–45 seconds.', ar: 'الأربعاء: شرح لتحديث منصة بالعربي، 30 إلى 45 ثانية.' },
@@ -20,18 +21,30 @@ const PLAN: Record<string, { en: string; ar: string }> = {
   sun: { en: 'Weekend: no studio posts. Prepare Monday’s client result post.', ar: 'نهاية الأسبوع: ما في منشورات للاستوديو. جهّز منشور نتيجة العميل للإثنين.' },
 };
 
+const CREATOR_PLAN: Record<string, { en: string; ar: string }> = {
+  mon: { en: 'Monday: a Q&A Reel answering the top question in your comments.', ar: 'الإثنين: ريل أسئلة وأجوبة يرد على أكثر سؤال في تعليقاتك.' },
+  tue: { en: 'Tuesday: Metro Part 2 goes live at 19:00. It is already scheduled.', ar: 'الثلاثاء: الجزء الثاني من المترو ينزل الساعة 7 المسا، وهو مجدول.' },
+  wed: { en: 'Wednesday: a platform-update explainer in Arabic, 30–45 seconds.', ar: 'الأربعاء: شرح لتحديث منصة بالعربي، 30 إلى 45 ثانية.' },
+  thu: { en: 'Thursday: the phone review on YouTube at 20:30. That slot is still a gap in this week’s pack.', ar: 'الخميس: مراجعة الجوال على يوتيوب الساعة 8:30 المسا. هالخانة للحين فاضية في باقة الأسبوع.' },
+  fri: { en: 'Friday: behind the scenes from this week’s shoot, plus the week-close story.', ar: 'الجمعة: كواليس تصوير الأسبوع، وستوري ختام الأسبوع.' },
+  sat: { en: 'Saturday: the Hatta vlog shoot at 07:00. Post stories only.', ar: 'السبت: تصوير فلوق حتا الساعة 7 الصبح. ستوريز بس.' },
+  sun: { en: 'Sunday: the Hatta vlog goes up at 18:00.', ar: 'الأحد: فلوق حتا ينزل الساعة 6 المسا.' },
+};
+
+const PLAN = prospect.preset === 'creator' ? CREATOR_PLAN : STUDIO_PLAN;
+
 const norm = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[\u064B-\u065F\u0300-\u036f]/g, '').trim();
 
 function findPlace(text: string): PlaceId | null {
   const q = norm(text);
   const aliases: [PlaceId, string[]][] = [
     ['hq', ['hq', 'office', 'design district', 'd3', 'studio hq', 'المقر']],
-    ['media', ['media city', 'urban brew', 'الإعلام', 'اوربان']],
+    ['media', ['media city', 'urban brew', 'creator hub', 'الإعلام', 'اوربان']],
     ['difc', ['difc', 'lumiere', 'financial', 'المالي', 'لوميير']],
     ['quoz', ['quoz', 'shoot', 'القوز', 'التصوير']],
     ['dafz', ['airport', 'freezone', 'saffron', 'المطار', 'سافرون']],
-    ['marina', ['marina', 'glow', 'مارينا', 'غلو']],
-    ['sharjah', ['sharjah', 'qafila', 'الشارقة', 'قافلة']],
+    ['marina', ['marina', 'glow', 'metro', 'مارينا', 'غلو', 'المترو']],
+    ['sharjah', ['sharjah', 'qafila', 'book fair', 'الشارقة', 'قافلة', 'معرض الكتاب']],
   ];
   return aliases.find(([, keys]) => keys.some((k) => q.includes(k)))?.[0] ?? null;
 }
@@ -98,7 +111,7 @@ export function respond(input: string, room: Room, story?: Story | null): AgentR
   const addMatch = input.match(/^(?:please\s+)?add (?:a )?task[:\s-]*(.*)$/i) ?? input.match(/^أضف مهمة[:\s-]*(.*)$/);
   if (addMatch) {
     let title = addMatch[1].trim();
-    if (!title) return say('What’s the task? For example: “Add a task: brief Pod B on the Glow & Co shoot tomorrow”.', 'شو المهمة؟ مثلاً: "أضف مهمة: موجز للفريق B عن تصوير غلو آند كو باكر".');
+    if (!title) return say(COPY.taskExample.en, COPY.taskExample.ar);
     let due: string | null = dubaiDate();
     if (/\btomorrow\b/i.test(title) || title.includes('باكر')) {
       due = dubaiDate(1);
@@ -202,17 +215,17 @@ export function respond(input: string, room: Room, story?: Story | null): AgentR
       ? [
           now ? `الحين: ${now.titleAr} (${fmtMin(now.start)}–${fmtMin(now.end)}).` : 'ما في اجتماع الحين.',
           next ? `الجاي: ${next.titleAr} الساعة ${fmtMin(next.start)}.` : '',
-          'البريد: 4 رسائل تحتاجك من آخر يومين، منها تصعيد من سافرون إير.',
+          COPY.inboxLine.ar,
           `المهام المستحقة: ${open.length}. الروتين: ${doneR} من ${todays.length}.`,
           `أقوى خبر: "${top.headlineAr}".`,
         ]
       : [
           now ? `Now: ${now.title} (${fmtMin(now.start)}–${fmtMin(now.end)}).` : 'Nothing in progress.',
           next ? `Next: ${next.title} at ${fmtMin(next.start)}.` : '',
-          'Inbox: 4 threads need you from the last 2 days, including a Saffron Air escalation.',
+          COPY.inboxLine.en,
           `Tasks due: ${open.length}. Routines: ${doneR} of ${todays.length} done.`,
           `Top story: “${top.headline}”.`,
-          `The one thing: ${open[0]?.title ?? 'clear the escalation before 11:00'}.`,
+          `The one thing: ${open[0]?.title ?? COPY.oneThing}.`,
         ];
     return { text: lines.filter(Boolean).join('\n'), tools };
   }

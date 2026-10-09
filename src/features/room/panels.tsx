@@ -110,7 +110,7 @@ export function LiveWall() {
     <Panel
       id="wall"
       title={room.t('pWall')}
-      source="Meta Ads · LinkedIn · manual snapshots"
+      source={room.t('srcWall')}
       fresh={`${room.t('cached')} · ${ago(room.refreshedAt, room.lang)}`}
       connector={['metaads', 'linkedin']}
     >
@@ -338,7 +338,7 @@ export function Publishing() {
   const masked = room.panelMasked('buffer') === 'numbers';
   const max = Math.max(...BUFFER.daily);
   return (
-    <Panel id="buffer" title={room.t('pBuffer')} source="Buffer · studio and client channels" fresh={`${room.t('cached')} · ${ago(room.refreshedAt, room.lang)}`} connector="buffer">
+    <Panel id="buffer" title={room.t('pBuffer')} source={room.t('srcBuffer')} fresh={`${room.t('cached')} · ${ago(room.refreshedAt, room.lang)}`} connector="buffer">
       <div className="rm-publishing">
         <div className="rm-kpis">
           {(
@@ -542,7 +542,9 @@ export function Rivals() {
   const [lane, setLane] = useState<Competitor['lane']>('performance');
   const namesMasked = room.panelMasked('rivals') === 'names';
   const numbersMasked = room.masks.numbers;
-  const ours = (c: Competitor) => (c.platform === 'LinkedIn' ? room.channels[1].followers : room.channels[0].followers);
+  // Compare against our own channel on the same platform.
+  const ours = (c: Competitor) =>
+    room.channels.find((ch) => ch.owner === 'studio' && ch.platform.startsWith(c.platform))?.followers ?? room.channels[0].followers;
   const list = room.competitors.filter((c) => c.lane === lane).sort((a, b) => b.followers - a.followers);
   const top = [...list].sort((a, b) => b.published.views - a.published.views)[0];
   const laneMax = Math.max(1, ...list.map((c) => Math.max(c.followers, ours(c))));
@@ -630,8 +632,13 @@ export function Rivals() {
       <p className="rm-board__note">
         <span className="rm-board__you-key" />
         {room.t('gapNote', { studio: prospect.name })} ·{' '}
-        <M on={numbersMasked}>Instagram {compact(room.channels[0].followers)}</M> ·{' '}
-        <M on={numbersMasked}>LinkedIn {compact(room.channels[1].followers)}</M>
+        <M on={numbersMasked}>
+          {room.channels[0].platform.split(' ')[0]} {compact(room.channels[0].followers)}
+        </M>{' '}
+        ·{' '}
+        <M on={numbersMasked}>
+          {room.channels[1].platform.split(' ')[0]} {compact(room.channels[1].followers)}
+        </M>
       </p>
       {top && (
         <div className="rm-published">

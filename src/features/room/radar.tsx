@@ -361,7 +361,7 @@ export function Radar() {
   })();
 
   return (
-    <Panel id="radar" title={room.t('pRadar')} source="Calendar · client and studio locations" fresh={room.radarPick ? room.t('pinned') : room.t('follows')} connector="calendar">
+    <Panel id="radar" title={room.t('pRadar')} source={room.t('srcRadar')} fresh={room.radarPick ? room.t('pinned') : room.t('follows')} connector="calendar">
       <div className="rm-radar" dir="ltr">
         <div
           ref={vpRef}

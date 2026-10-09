@@ -1,7 +1,9 @@
 // The Control Room's own database, mirrored to localStorage. Every write is pinned to the
 // version last read, so two tabs or sessions never overwrite each other silently.
+import { prospect } from '../../data/prospect';
 
-const PREFIX = 'bombay-os.room/';
+// Each preset keeps its own board, so switching prospect never shows another preset's data.
+const PREFIX = `bombay-os.room/${prospect.preset}/`;
 
 interface Doc<T> {
   v: number;

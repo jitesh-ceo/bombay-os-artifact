@@ -1,3 +1,4 @@
+import { prospect } from '../../data/prospect';
 import type { ConnectorId, Lang } from './types';
 
 const en = {
@@ -191,6 +192,10 @@ const en = {
 
   cached: 'cached 5 min',
   syncConflict: 'Another session changed {c}. Re-read before writing.',
+
+  srcWall: 'Meta Ads · LinkedIn · manual snapshots',
+  srcBuffer: 'Buffer · studio and client channels',
+  srcRadar: 'Calendar · client and studio locations',
 };
 
 export type Key = keyof typeof en;
@@ -386,12 +391,83 @@ const ar: Record<Key, string> = {
 
   cached: 'محفوظ 5 دقايق',
   syncConflict: 'جلسة ثانية غيّرت {c}. تمت القراءة من جديد قبل الكتابة.',
+
+  srcWall: 'ميتا للإعلانات · لينكدإن · لقطات يدوية',
+  srcBuffer: 'بفر · قنوات الاستوديو والعملاء',
+  srcRadar: 'التقويم · مواقع العملاء والاستوديو',
 };
 
 const dict: Record<Lang, Record<Key, string>> = { en, ar };
 
+// A solo creator reads the same board in their own words.
+const creatorEn: Partial<Record<Key, string>> = {
+  pWall: 'Live channel stats',
+  pBuffer: 'Upload queue · 30 days',
+  pNews: 'Trend radar',
+  pPipeline: 'Brand-deal pipeline',
+  pRivals: 'Creators in your niche',
+  pRadar: 'Radar · shoots & brands',
+  studio: 'You',
+  clientTag: 'Partner',
+  studioHq: 'Home studio',
+  clientOffice: 'Brand partner',
+  laneRivalPerf: 'Lifestyle',
+  laneRivalCreative: 'Tech',
+  laneRivalB2b: 'YouTube',
+  agency: 'Creator',
+  gapNote: 'Gap measured against you on the same platform',
+  rescript: 'Your post · AR',
+  rescriptEn: 'Your post · EN',
+  rapidTake: 'Story take',
+  takeLen: 'Story · EN + AR',
+  fInvited: 'Pitched',
+  fDm: 'Talking',
+  fReplied: 'Negotiating',
+  fBooked: 'Signed',
+  neverPrice: 'Leads with the media kit. Never a discount.',
+  qPost: 'What should I post today?',
+  privacyDemoStrip: 'Private · brand demo · internal panels masked, live numbers visible',
+  srcWall: 'YouTube Studio · Instagram · manual snapshots',
+  srcBuffer: 'Upload queue · your channels and partner posts',
+  srcRadar: 'Calendar · shoots, brands and events',
+};
+
+const creatorAr: Partial<Record<Key, string>> = {
+  pWall: 'إحصاءات القنوات المباشرة',
+  pBuffer: 'قائمة النشر · 30 يوم',
+  pNews: 'رادار الترند',
+  pPipeline: 'صفقات العلامات',
+  pRivals: 'صناع محتوى في مجالك',
+  pRadar: 'الرادار · التصوير والعلامات',
+  studio: 'أنت',
+  clientTag: 'شريك',
+  studioHq: 'الاستوديو',
+  clientOffice: 'علامة شريكة',
+  laneRivalPerf: 'لايف ستايل',
+  laneRivalCreative: 'تقنية',
+  laneRivalB2b: 'يوتيوب',
+  agency: 'صانع محتوى',
+  gapNote: 'الفرق محسوب مقابلك على نفس المنصة',
+  rescript: 'منشورك · عربي',
+  rescriptEn: 'منشورك · إنجليزي',
+  rapidTake: 'فكرة ستوري',
+  takeLen: 'ستوري · عربي + إنجليزي',
+  fInvited: 'تم العرض',
+  fDm: 'في نقاش',
+  fReplied: 'تفاوض',
+  fBooked: 'موقّع',
+  neverPrice: 'نبدأ بملف الوسائط. بدون خصومات.',
+  qPost: 'شو أنشر اليوم؟',
+  srcWall: 'يوتيوب ستوديو · إنستغرام · لقطات يدوية',
+  srcBuffer: 'قائمة النشر · قنواتك ومنشورات الشركاء',
+  srcRadar: 'التقويم · التصوير والعلامات والفعاليات',
+};
+
+const overrides: Record<Lang, Partial<Record<Key, string>>> | null =
+  prospect.preset === 'creator' ? { en: creatorEn, ar: creatorAr } : null;
+
 export function translate(lang: Lang, key: Key, vars?: Record<string, string>) {
-  let s = dict[lang][key] ?? en[key];
+  let s = overrides?.[lang][key] ?? dict[lang][key] ?? en[key];
   if (vars) for (const [k, v] of Object.entries(vars)) s = s.replace(`{${k}}`, v);
   return s;
 }

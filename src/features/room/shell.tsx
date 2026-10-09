@@ -2,6 +2,7 @@ import { animate } from 'framer-motion';
 import { Bot, EyeOff, Globe2, Pencil, RefreshCw, Settings as Cog, Tv } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Kbd } from '../../components/primitives';
+import { BUFFER, COPY } from './seed';
 import { useRoom } from './store';
 import { compact, dubaiDate, fmtClock, fmtLongDate, runsToday } from './time';
 import { M } from './ui';
@@ -187,13 +188,13 @@ export function Ticker() {
   const done = todays.filter((r) => r.lastDone === dubaiDate()).length;
   const ar = room.lang === 'ar';
   const lines = [
-    `META · ${ig.handle} · ${ar ? 'وصول 14 يوم' : '14D REACH'} ${compact(ig.reach14 ?? 0)}`,
-    `META · URBAN BREW · ROAS 2.9× → 1.8× · ${ar ? 'إرهاق إعلان' : 'CREATIVE FATIGUE'}`,
+    `${COPY.tickerSource} · ${ig.handle} · ${ar ? 'وصول 14 يوم' : '14D REACH'} ${compact(ig.reach14 ?? 0)}`,
+    ar ? COPY.tickerAlert.ar : COPY.tickerAlert.en,
     `${ar ? 'مؤشر النبض' : 'PULSE INDEX'} ${room.pulse.total}/100`,
-    `NEWSWIRE · ${room.stories.length} ${ar ? 'أخبار داخل 48 ساعة' : 'STORIES INSIDE 48H'}`,
+    `${COPY.tickerNews} · ${room.stories.length} ${ar ? 'أخبار داخل 48 ساعة' : 'STORIES INSIDE 48H'}`,
     `${ar ? 'الروتين' : 'ROUTINES'} · ${done}/${todays.length}`,
-    `BUFFER · 126 ${ar ? 'منشور' : 'POSTS'} · 30D`,
-    `${ar ? 'عملاء جدد' : 'NEW BUSINESS'} · ${room.pipeline.booked} ${ar ? 'مكالمات محجوزة' : 'CALLS BOOKED'}`,
+    `${COPY.tickerPosts} · ${BUFFER.posts} ${ar ? 'منشور' : 'POSTS'} · 30D`,
+    `${ar ? COPY.tickerPipeline.ar : COPY.tickerPipeline.en} · ${room.pipeline.booked} ${ar ? COPY.tickerPipeline.unitAr : COPY.tickerPipeline.unitEn}`,
     `RADAR · ${room.places.find((p) => p.id === room.radarCentre)?.name.toUpperCase()}`,
   ];
   return (
